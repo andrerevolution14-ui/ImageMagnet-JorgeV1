@@ -27,15 +27,15 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
     };
 
     const options1 = [
-        { text: 'O mais rápido possível', emoji: '⚡', color: '#f97316' },
-        { text: 'Daqui a 1-3 meses', emoji: '📅', color: '#3b82f6' },
-        { text: 'Apenas a planear', emoji: '💭', color: '#a855f7' }
+        { id: 'a', text: 'O mais rápido possível', emoji: '⚡', color: '#f97316' },
+        { id: 'b', text: 'Daqui a 1-3 meses', emoji: '📅', color: '#3b82f6' },
+        { id: 'c', text: 'Apenas a planear', emoji: '💭', color: '#a855f7' }
     ];
 
     const options2 = [
-        { text: 'Valorizar o imóvel (Venda)', emoji: '💎', color: '#10b981' },
-        { text: 'Conforto da família', emoji: '🏡', color: '#f59e0b' },
-        { text: 'Modernização estética', emoji: '✨', color: '#8b5cf6' }
+        { id: 'a', text: 'Valorizar o imóvel (Venda)', emoji: '💎', color: '#10b981' },
+        { id: 'b', text: 'Conforto da família', emoji: '🏡', color: '#f59e0b' },
+        { id: 'c', text: 'Modernização estética', emoji: '✨', color: '#8b5cf6' }
     ];
 
     return (
@@ -75,7 +75,7 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                     <button
                         key={opt.text}
                         type="button"
-                        onClick={() => handleOptionClick({ remodelDate: opt.text })}
+                        onClick={() => handleOptionClick({ remodelDate: opt.text, question_1: opt.id })}
                         style={{
                             width: '100%',
                             padding: '20px 24px',
@@ -121,7 +121,7 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                     <button
                         key={opt.text}
                         type="button"
-                        onClick={() => handleOptionClick({ objective: opt.text })}
+                        onClick={() => handleOptionClick({ objective: opt.text, question_2: opt.id })}
                         style={{
                             width: '100%',
                             padding: '20px 24px',

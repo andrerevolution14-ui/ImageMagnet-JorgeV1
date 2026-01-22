@@ -12,6 +12,8 @@ export type FunnelData = {
     zone: string;
     remodelDate: string;
     objective: string;
+    question_1: string;
+    question_2: string;
     name: string;
     email: string;
     outputImage: string | null;
@@ -27,6 +29,8 @@ export default function Funnel() {
         zone: 'living room',
         remodelDate: '',
         objective: '',
+        question_1: '',
+        question_2: '',
         name: '',
         email: '',
         outputImage: null,
@@ -34,6 +38,29 @@ export default function Funnel() {
     });
 
     const nextStep = useCallback(() => setStep((s) => s + 1), []);
+
+    const sendLeadToPocketBase = async (finalData: FunnelData) => {
+        try {
+            console.log("Sending lead to PocketBase...");
+            const response = await fetch('http://76.13.11.36:8090/api/collections/leads/records', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: finalData.email,
+                    question_1: finalData.question_1,
+                    question_2: finalData.question_2
+                }),
+            });
+
+            if (response.ok) {
+                console.log("Lead captured successfully in PocketBase");
+            } else {
+                console.error("Failed to capture lead in PocketBase", response.statusText);
+            }
+        } catch (error) {
+            console.error("Error sending lead to PocketBase:", error);
+        }
+    };
 
     // Using useCallback to prevent unnecessary re-renders of child components
     const updateData = useCallback((newData: Partial<FunnelData>) => {
@@ -118,13 +145,18 @@ export default function Funnel() {
         nextStep();
     };
 
+    const handleStep2Submit = () => {
+        sendLeadToPocketBase(data);
+        nextStep();
+    };
+
     return (
         <div className="min-h-screen flex items-center justify-center p-4">
             {step === 1 && (
                 <Step1Hook data={data} updateData={updateData} onNext={handleStep1Submit} />
             )}
             {step === 2 && (
-                <Step2Quiz data={data} updateData={updateData} onNext={nextStep} />
+                <Step2Quiz data={data} updateData={updateData} onNext={handleStep2Submit} />
             )}
             {step === 3 && (
                 <Step3Result data={data} updateData={updateData} />
