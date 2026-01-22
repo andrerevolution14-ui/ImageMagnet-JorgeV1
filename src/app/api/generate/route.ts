@@ -28,14 +28,11 @@ export async function POST(req: NextRequest) {
         // > 0.65 = Hallucinations (Walls moving, distortion)
         // 0.55 = Perfect balance for changing materials/furniture while keeping walls fixed.
 
-        const prompt = `Complete interior renovation of this exact ${zone} in ${style} style. 
-        High-end material transformation.
-        FLOORING: Install premium new floor appropriate for ${style}.
-        WALLS: Fresh luxury paint/finish, pristine condition.
-        FURNITURE: Brand new high-design ${style} furniture placed in similar arrangement.
-        LIGHTING: Bright, warm, architectural LED lighting.
-        ATMOSPHERE: Expensive, clean, magazine quality.
-        IMPORTANT: Keep the room geometry, windows, and doors exactly as they are. Just upgrade every surface and object.`;
+        const prompt = `Highly detailed architectural photography of a ${zone} remodeled in ${style} style. 
+        Luxury interior design, professional lighting, soft natural sunlight from windows. 
+        Premium ${style} furniture, realistic textures on flooring and walls.
+        Magazine quality, clean, photorealistic, 8k resolution.
+        The layout and structure of the room must remain identical to the original image.`;
 
         const output = await replicate.run(
             "stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
@@ -43,10 +40,10 @@ export async function POST(req: NextRequest) {
                 input: {
                     image: image,
                     prompt: prompt,
-                    prompt_strength: 0.55,
-                    num_inference_steps: 30, // Optimized for speed on Vercel
-                    guidance_scale: 12, // Slightly lower for faster convergence
-                    negative_prompt: "broken geometry, crooked walls, floating furniture, messy, dirty, old, construction site, blur, low resolution, distorted windows, weird perspective"
+                    prompt_strength: 0.5, // 50/50 balance for realism
+                    num_inference_steps: 30,
+                    guidance_scale: 7.5, // Standard scale to avoid "fried" colors and AI artifacts
+                    negative_prompt: "distorted, fake, cartoon, drawing, painting, oversaturated, weird colors, messy, blurry, low quality, deformed furniture"
                 }
             }
         );
