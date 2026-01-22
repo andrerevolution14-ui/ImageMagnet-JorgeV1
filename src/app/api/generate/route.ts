@@ -36,35 +36,32 @@ export async function POST(req: NextRequest) {
         4. FIXTURES: Ultra-modern handles, switches, and high-design architectural details.
         VISUAL STYLE: Photorealistic, cinematic natural light, 8k resolution, magazine quality. KEEP ORIGINAL ROOM GEOMETRY EXACTLY.`;
 
-        // Using a more stable ControlNet Hough version for Stable Diffusion 1.5
+        // Using the most stable and guaranteed version of SDXL (Stable Diffusion XL)
+        // Set to high strength (0.8) to ensure the requested radical changes occur
         const prediction = await replicate.predictions.create({
-            version: "ad049a4694469738f6b0b57e795c6c06a48dc7ef999b82143f2f01fbd8f08149", // cjwbw/controlnet-hough stable version
+            version: "39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
             input: {
                 image: image,
                 prompt: prompt,
-                a_prompt: "best quality, extremely detailed, real architecture, luxury materials, professional lighting, 8k resolution, photorealistic",
-                n_prompt: "longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, distorted, messy, unfinished, unrealistic, cartoon, drawing",
-                num_samples: "1",
-                image_resolution: "768",
-                ddim_steps: 20,
-                scale: 9,
-                eta: 0
+                prompt_strength: 0.8, // TRANSFORM POWER: 80% change allowed
+                num_inference_steps: 40,
+                guidance_scale: 15, // Force obedience to the transformation prompt
+                negative_prompt: "lowres, bad quality, blurry, distorted, messy, unfinished, unrealistic, old materials, original flooring, original ceiling"
             }
         });
 
-        console.log('ControlNet Prediction created:', prediction.id);
+        console.log('SDXL Prediction created:', prediction.id);
 
         if (prediction.error) {
-            console.error('Replicate prediction error field:', prediction.error);
             return NextResponse.json({ error: prediction.error }, { status: 500 });
         }
 
         return NextResponse.json(prediction);
     } catch (error: any) {
-        console.error('Detais of Replicate error:', error);
+        console.error('Final attempt error:', error);
         return NextResponse.json({
-            error: error.message || 'Failed to start generation on Replicate',
-            details: error.stack
+            error: "Erro na IA: " + (error.message || 'Falha ao iniciar geração'),
+            details: error.toString()
         }, { status: 500 });
     }
 }
