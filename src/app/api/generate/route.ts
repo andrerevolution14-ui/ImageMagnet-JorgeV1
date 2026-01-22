@@ -28,11 +28,16 @@ export async function POST(req: NextRequest) {
         // > 0.65 = Hallucinations (Walls moving, distortion)
         // 0.55 = Perfect balance for changing materials/furniture while keeping walls fixed.
 
-        const prompt = `Highest quality professional interior design photography of a luxury ${style} ${zone}. 
-        Cinematic lighting, clean architectural textures, photorealistic, 8k resolution.
-        The structural layout and walls must match the original image exactly.`;
+        const prompt = `Professional real estate renovation photography of a ${zone} in ${style} style. 
+        EXECUTE THESE RENOVATION PATTERNS:
+        1. Replace old tiles with large-format marble or matte porcelain.
+        2. Replace old fixtures with modern wall-hung toilets and sleek minimalist faucets.
+        3. Install luxury cabinetry with integrated LED strip lighting.
+        4. Bright white ceilings and walls with cinematic architectural lighting.
+        5. Use a palette of oak wood, soft greys, and crisp whites.
+        PHOTO STANDARDS: 8k resolution, razor sharp, high-end interior design magazine style. Identical room structure to original.`;
 
-        // Using standard SDXL - extremely stable for img2img
+        // Using standard SDXL - the most reliable for these specific renovation patterns
         const prediction = await replicate.predictions.create({
             version: "39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
             input: {
