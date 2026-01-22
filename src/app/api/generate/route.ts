@@ -28,33 +28,32 @@ export async function POST(req: NextRequest) {
         // > 0.65 = Hallucinations (Walls moving, distortion)
         // 0.55 = Perfect balance for changing materials/furniture while keeping walls fixed.
 
-        const prompt = `Highest-end architectural interior renovation of a ${zone} in ${style} style.
-        SURFACE TRANSFORMATION RULES:
-        1. FLOORING & SKIRTING: Replace old floors with seamless microcement or wide-plank oak. Add minimalist integrated flush skirting boards (rodapés embutidos).
-        2. WALLS & TEXTURES: Apply smooth high-end plaster, concrete textures, or matte premium paint. Remove all outdated wallpapers or rough textures.
-        3. CEILING & LIGHTING: Modern dropped ceiling (teto falso) with recessed anti-glare LED spotlights, perimeter hidden LED strips, and cinematic accent lighting.
-        4. FIXTURES: Ultra-modern handles, switches, and high-design architectural details.
-        VISUAL STYLE: Photorealistic, cinematic natural light, 8k resolution, magazine quality. KEEP ORIGINAL ROOM GEOMETRY EXACTLY.`;
+        const prompt = `Hyper-realistic architectural interior renovation photography of a ${zone} in ${style} style. 
+        MANDATORY RULES: 
+        1. Keep the exact geometry of walls, windows, and doors from the original image. 
+        2. Replace floor with high-end seamless large tiles or wide-plank wood. 
+        3. Install modern minimalist skirting boards. 
+        4. Smooth high-quality wall painting and textures. 
+        5. Modern drop ceiling with recessed architectural LED lighting.
+        STYLE: Professional high-end magazine photography, cinematic lighting, 8k resolution, photorealistic, no distortion, no hallucinations.`;
 
-        // Using FLUX Fill Dev - The state-of-the-art model from Black Forest Labs
-        // We use a 1x1 white pixel mask to tell the AI to "refill" the whole image area
-        const fullMask = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=";
-
+        // Using FLUX ControlNet Canny - Best for maintaining "SENSE" and structure
+        // This forces the AI to respect every line of the original room
         const prediction = await replicate.predictions.create({
-            model: "black-forest-labs/flux-fill-dev",
+            version: "a4369e5d677a288414a3838a4d3393b482d8c3397960fc5d4c887fb7349b1ca2",
             input: {
-                image: image,
-                mask: fullMask, // Tells FLUX to process the entire area
+                control_image: image,
                 prompt: prompt,
-                guidance: 30, // High guidance for high-end results
-                num_steps: 30,
+                control_type: "canny",
+                num_steps: 28,
+                guidance: 3.5,
+                conditioning_scale: 0.95, // ABSOLUTE PRESERVATION of the room structure
                 output_format: "jpg",
-                output_quality: 90,
-                prompt_upsampling: true // Improves the detail of materials
+                output_quality: 90
             }
         });
 
-        console.log('Flux Fill Prediction created:', prediction.id);
+        console.log('Flux ControlNet Prediction created:', prediction.id);
 
         if (prediction.error) {
             return NextResponse.json({ error: prediction.error }, { status: 500 });
