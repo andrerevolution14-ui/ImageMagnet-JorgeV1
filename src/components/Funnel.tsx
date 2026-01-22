@@ -15,6 +15,8 @@ export type FunnelData = {
     name: string;
     email: string;
     outputImage: string | null;
+    status: 'idle' | 'generating' | 'success' | 'error';
+    errorMessage?: string;
 };
 
 export default function Funnel() {
@@ -28,6 +30,7 @@ export default function Funnel() {
         name: '',
         email: '',
         outputImage: null,
+        status: 'idle'
     });
 
     const nextStep = useCallback(() => setStep((s) => s + 1), []);
@@ -41,6 +44,7 @@ export default function Funnel() {
         if (!data.image) return;
 
         console.log("Starting generation process...");
+        updateData({ status: 'generating', errorMessage: undefined });
 
         try {
             // Step 1: Start the prediction
@@ -55,10 +59,16 @@ export default function Funnel() {
             });
 
             if (!response.ok) {
-                throw new Error(`Failed to start generation: ${response.statusText}`);
+                const text = await response.text();
+                throw new Error("Não foi possível iniciar a geração. Verifique a sua ligação.");
             }
 
             let prediction = await response.json();
+
+            if (prediction.error) {
+                throw new Error(prediction.error);
+            }
+
             console.log("Prediction started:", prediction.id);
 
             // Step 2: Poll for results
@@ -76,19 +86,29 @@ export default function Funnel() {
                             ? currentStatus.output[0]
                             : currentStatus.output;
 
-                        updateData({ outputImage: outputUrl });
+                        updateData({ outputImage: outputUrl, status: 'success' });
                     } else if (currentStatus.status === "failed" || currentStatus.status === "canceled") {
                         clearInterval(pollInterval);
+                        updateData({ status: 'error', errorMessage: "A IA encontrou um problema ao processar a imagem. Tente uma foto diferente." });
                         console.error("Task failed or canceled", currentStatus.error);
                     }
                 } catch (statusErr) {
                     console.error("Polling error:", statusErr);
-                    clearInterval(pollInterval);
+                    // Don't stop polling on single network error, but we could add a counter
                 }
-            }, 1500); // Check every 1.5 seconds
+            }, 2000); // Poll every 2 seconds
 
-        } catch (err) {
-            console.error('Generation failed in frontend:', err);
+            // Safety timeout: stop after 90 seconds
+            setTimeout(() => {
+                clearInterval(pollInterval);
+                if (data.status === 'generating') {
+                    updateData({ status: 'error', errorMessage: "Tempo de espera excedido. Tente novamente." });
+                }
+            }, 90000);
+
+        } catch (err: any) {
+            console.error('Generation failed:', err);
+            updateData({ status: 'error', errorMessage: err.message });
         }
     };
 

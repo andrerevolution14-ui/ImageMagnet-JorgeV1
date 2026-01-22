@@ -28,23 +28,20 @@ export async function POST(req: NextRequest) {
         // > 0.65 = Hallucinations (Walls moving, distortion)
         // 0.55 = Perfect balance for changing materials/furniture while keeping walls fixed.
 
-        const prompt = `Professional high-end interior design photography of a ${zone}, remodeled in ${style} style. 
-        Luxury materials, soft window lighting, cinematic architectural photography, clean and bright. 
-        Highly detailed textures, photorealistic, 8k resolution.
-        The structural layout, windows, and walls MUST remain identical to the original.`;
+        const prompt = `Highest quality professional interior design photography of a luxury ${style} ${zone}. 
+        Cinematic lighting, clean architectural textures, photorealistic, 8k resolution.
+        The structural layout and walls must match the original image exactly.`;
 
-        // Using SDXL Lightning for extreme speed and high quality on Vercel
-        // Using SDXL Lightning for extreme speed
-        // Refactored to predictions.create to avoid Vercel 10s timeout
+        // Using standard SDXL - extremely stable for img2img
         const prediction = await replicate.predictions.create({
-            version: "727e49a643e13005eafda46da92931754406606fbf63266e1336fa999e5258e7",
+            version: "39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
             input: {
                 image: image,
                 prompt: prompt,
                 prompt_strength: 0.5,
-                num_inference_steps: 4,
-                guidance_scale: 1,
-                negative_prompt: "distorted, blurry, fake, cartoon, drawing, painting, bad furniture, messy room, low quality, warped walls"
+                num_inference_steps: 30,
+                guidance_scale: 7.5,
+                negative_prompt: "distorted, blurry, fake, cartoon, drawing, painting, bad furniture, messy room, low quality, warped walls, extra legs, deformed"
             }
         });
 

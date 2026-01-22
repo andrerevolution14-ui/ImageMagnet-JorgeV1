@@ -61,22 +61,53 @@ export default function Step3Result({ data }: Step3Props) {
 
             {/* Images Section */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
-                {/* AFTER Image */}
+                {/* AFTER Image or Error/Loading */}
                 <div
-                    onClick={() => openImage(data.outputImage)}
+                    onClick={() => data.outputImage && openImage(data.outputImage)}
                     style={{
                         position: 'relative',
                         aspectRatio: '16/9',
                         width: '100%',
                         borderRadius: '16px',
                         overflow: 'hidden',
-                        boxShadow: '0 15px 30px rgba(0, 0, 0, 0.12)',
-                        border: '2px solid white',
-                        cursor: 'pointer',
-                        background: '#f8fafc'
+                        boxShadow: data.status === 'error' ? 'none' : '0 15px 30px rgba(0, 0, 0, 0.12)',
+                        border: data.status === 'error' ? '2px solid #fee2e2' : '2px solid white',
+                        cursor: data.outputImage ? 'pointer' : 'default',
+                        background: data.status === 'error' ? '#fef2f2' : '#f8fafc'
                     }}
                 >
-                    {!data.outputImage ? (
+                    {data.status === 'error' ? (
+                        <div style={{
+                            width: '100%',
+                            height: '100%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: '24px',
+                            textAlign: 'center'
+                        }}>
+                            <div style={{ color: '#ef4444', marginBottom: '12px', fontWeight: 700 }}>⚠️ Oops!</div>
+                            <div style={{ fontSize: '12px', color: '#991b1b', lineHeight: 1.4, marginBottom: '16px' }}>
+                                {data.errorMessage || "Ocorreu um erro ao gerar a sua imagem. Por favor, tente novamente."}
+                            </div>
+                            <button
+                                onClick={() => window.location.reload()}
+                                style={{
+                                    padding: '8px 16px',
+                                    background: '#ef4444',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '8px',
+                                    fontSize: '12px',
+                                    fontWeight: 700,
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Tentar de Novo
+                            </button>
+                        </div>
+                    ) : !data.outputImage ? (
                         <div style={{
                             width: '100%',
                             height: '100%',
@@ -99,7 +130,6 @@ export default function Step3Result({ data }: Step3Props) {
                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                 onError={(e) => {
                                     console.error("Image failed to load:", data.outputImage);
-                                    // Could fallback to a message or retry
                                 }}
                             />
                             <div style={{
