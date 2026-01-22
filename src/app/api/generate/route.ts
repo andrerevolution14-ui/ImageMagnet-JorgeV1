@@ -36,15 +36,14 @@ export async function POST(req: NextRequest) {
         4. FIXTURES: Ultra-modern handles, switches, and high-design architectural details.
         VISUAL STYLE: Photorealistic, cinematic natural light, 8k resolution, magazine quality. KEEP ORIGINAL ROOM GEOMETRY EXACTLY.`;
 
-        // Using jagilley/controlnet-hough - The absolute best for house remodeling
-        // This is Stable Diffusion + architectural line detection (Hough)
+        // Using a more stable ControlNet Hough version for Stable Diffusion 1.5
         const prediction = await replicate.predictions.create({
-            version: "854e961d50116671fa843336423985d3662bba65bdcb6440c9ae151cb820fd6",
+            version: "ad049a4694469738f6b0b57e795c6c06a48dc7ef999b82143f2f01fbd8f08149", // cjwbw/controlnet-hough stable version
             input: {
                 image: image,
                 prompt: prompt,
-                a_prompt: "best quality, extremely detailed, real architecture, luxury materials, professional lighting, 8k resolution",
-                n_prompt: "longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, distorted, messy, unfinished",
+                a_prompt: "best quality, extremely detailed, real architecture, luxury materials, professional lighting, 8k resolution, photorealistic",
+                n_prompt: "longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, distorted, messy, unfinished, unrealistic, cartoon, drawing",
                 num_samples: "1",
                 image_resolution: "768",
                 ddim_steps: 20,
@@ -55,12 +54,17 @@ export async function POST(req: NextRequest) {
 
         console.log('ControlNet Prediction created:', prediction.id);
 
+        if (prediction.error) {
+            console.error('Replicate prediction error field:', prediction.error);
+            return NextResponse.json({ error: prediction.error }, { status: 500 });
+        }
+
         return NextResponse.json(prediction);
     } catch (error: any) {
-        console.error('Replicate error full details:', error);
+        console.error('Detais of Replicate error:', error);
         return NextResponse.json({
-            error: error.message || 'Failed to start generation',
-            details: error.toString()
+            error: error.message || 'Failed to start generation on Replicate',
+            details: error.stack
         }, { status: 500 });
     }
 }

@@ -59,8 +59,9 @@ export default function Funnel() {
             });
 
             if (!response.ok) {
-                const text = await response.text();
-                throw new Error("Não foi possível iniciar a geração. Verifique a sua ligação.");
+                const errorData = await response.json().catch(() => ({}));
+                const message = errorData.error || errorData.details || response.statusText;
+                throw new Error(message || "Erro desconhecido ao iniciar a geração.");
             }
 
             let prediction = await response.json();
