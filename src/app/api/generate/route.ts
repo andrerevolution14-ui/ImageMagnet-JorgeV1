@@ -36,21 +36,23 @@ export async function POST(req: NextRequest) {
         4. FIXTURES: Ultra-modern handles, switches, and high-design architectural details.
         VISUAL STYLE: Photorealistic, cinematic natural light, 8k resolution, magazine quality. KEEP ORIGINAL ROOM GEOMETRY EXACTLY.`;
 
-        // Using the most canonical and robust version of Stable Diffusion XL (SDXL)
-        // This is the "Gold Standard" version that is public and stable
+        // Using FLUX with ControlNet Canny - The absolute highest quality for architecture
+        // This ensures the room structure is 100% preserved while changing materials
         const prediction = await replicate.predictions.create({
-            version: "39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
+            version: "a4369e5d677a288414a3838a4d3393b482d8c3397960fc5d4c887fb7349b1ca2",
             input: {
-                image: image,
+                control_image: image, // Canny control image
                 prompt: prompt,
-                prompt_strength: 0.75, // Strong transformation power
-                num_inference_steps: 30,
-                guidance_scale: 12,
-                negative_prompt: "lowres, bad quality, blurry, distorted, messy, unfinished, unrealistic, old materials, original flooring, original ceiling, plastic look"
+                control_type: "canny",
+                num_steps: 25,
+                guidance: 3.5,
+                conditioning_scale: 0.9, // High structural preservation
+                output_format: "jpg",
+                output_quality: 90
             }
         });
 
-        console.log('Stable Prediction created:', prediction.id);
+        console.log('Flux ControlNet Prediction created:', prediction.id);
 
         if (prediction.error) {
             return NextResponse.json({ error: prediction.error }, { status: 500 });
