@@ -34,29 +34,27 @@ export async function POST(req: NextRequest) {
         The structural layout, windows, and walls MUST remain identical to the original.`;
 
         // Using SDXL Lightning for extreme speed and high quality on Vercel
-        const output = await replicate.run(
-            "stability-ai/sdxl-lightning-4step:727e49a643e13005eafda46da92931754406606fbf63266e1336fa999e5258e7",
-            {
-                input: {
-                    image: image,
-                    prompt: prompt,
-                    prompt_strength: 0.5, // Perfect balance for renovation
-                    num_inference_steps: 4, // Lightning only needs 4 steps for amazing quality
-                    guidance_scale: 1, // Lightning uses low guidance
-                    negative_prompt: "distorted, blurry, fake, cartoon, drawing, painting, bad furniture, messy room, low quality, warped walls"
-                }
+        // Using SDXL Lightning for extreme speed
+        // Refactored to predictions.create to avoid Vercel 10s timeout
+        const prediction = await replicate.predictions.create({
+            version: "727e49a643e13005eafda46da92931754406606fbf63266e1336fa999e5258e7",
+            input: {
+                image: image,
+                prompt: prompt,
+                prompt_strength: 0.5,
+                num_inference_steps: 4,
+                guidance_scale: 1,
+                negative_prompt: "distorted, blurry, fake, cartoon, drawing, painting, bad furniture, messy room, low quality, warped walls"
             }
-        );
+        });
 
-        console.log('Replicate Output:', output);
+        console.log('Prediction created:', prediction.id);
 
-        const imageUrl = Array.isArray(output) ? output[0] : output;
-
-        return NextResponse.json({ output: imageUrl });
+        return NextResponse.json(prediction);
     } catch (error: any) {
         console.error('Replicate error full details:', error);
         return NextResponse.json({
-            error: error.message || 'Failed to generate image',
+            error: error.message || 'Failed to start generation',
             details: error.toString()
         }, { status: 500 });
     }

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Upload, ChevronRight, Sparkles } from 'lucide-react';
 import { FunnelData } from './Funnel';
 import { useState } from 'react';
+import imageCompression from 'browser-image-compression';
 
 interface Step1Props {
     data: FunnelData;
@@ -16,14 +17,33 @@ const zones = ['Cozinha', 'Sala', 'Quarto', 'Casa de Banho'];
 
 export default function Step1Hook({ data, updateData, onNext }: Step1Props) {
     const [isDragging, setIsDragging] = useState(false);
+    const [isCompressing, setIsCompressing] = useState(false);
 
-    const handleFile = (file: File) => {
+    const handleFile = async (file: File) => {
         if (file && file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                updateData({ image: e.target?.result as string });
-            };
-            reader.readAsDataURL(file);
+            setIsCompressing(true);
+            try {
+                const options = {
+                    maxSizeMB: 1,
+                    maxWidthOrHeight: 1280,
+                    useWebWorker: true
+                };
+
+                const compressedFile = await imageCompression(file, options);
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    updateData({ image: e.target?.result as string });
+                    setIsCompressing(false);
+                };
+                reader.readAsDataURL(compressedFile);
+            } catch (error) {
+                console.error("Compression failed:", error);
+                setIsCompressing(false);
+                // Fallback to original
+                const reader = new FileReader();
+                reader.onload = (e) => updateData({ image: e.target?.result as string });
+                reader.readAsDataURL(file);
+            }
         }
     };
 

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@vercel/analytics": "^1.6.1",
+    "browser-image-compression": "^2.0.2",
     "clsx": "^2.1.1",
     "framer-motion": "^11.2.10",
     "lucide-react": "^0.379.0",

@@ -40,37 +40,56 @@ export default function Funnel() {
     const startGeneration = async () => {
         if (!data.image) return;
 
-        console.log("Starting generation...");
-        fetch('/api/generate', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                image: data.image,
-                style: data.style,
-                zone: data.zone,
-            }),
-        })
-            .then(async res => {
-                if (!res.ok) {
-                    const text = await res.text();
-                    throw new Error(`Server error: ${res.status} - ${text}`);
-                }
-                return res.json();
-            })
-            .then(result => {
-                console.log("Generation result success:", result);
-                if (result.output) {
-                    updateData({ outputImage: result.output });
-                } else {
-                    console.error("No output in result:", result);
-                }
-            })
-            .catch(err => {
-                console.error('Generation failed in frontend:', err);
-                // We could set an error state here to show the user
+        console.log("Starting generation process...");
+
+        try {
+            // Step 1: Start the prediction
+            const response = await fetch('/api/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    image: data.image,
+                    style: data.style,
+                    zone: data.zone,
+                }),
             });
+
+            if (!response.ok) {
+                throw new Error(`Failed to start generation: ${response.statusText}`);
+            }
+
+            let prediction = await response.json();
+            console.log("Prediction started:", prediction.id);
+
+            // Step 2: Poll for results
+            const pollInterval = setInterval(async () => {
+                try {
+                    const statusRes = await fetch(`/api/predictions/${prediction.id}`);
+                    if (!statusRes.ok) throw new Error("Status check failed");
+
+                    const currentStatus = await statusRes.json();
+                    console.log("Current status:", currentStatus.status);
+
+                    if (currentStatus.status === "succeeded") {
+                        clearInterval(pollInterval);
+                        const outputUrl = Array.isArray(currentStatus.output)
+                            ? currentStatus.output[0]
+                            : currentStatus.output;
+
+                        updateData({ outputImage: outputUrl });
+                    } else if (currentStatus.status === "failed" || currentStatus.status === "canceled") {
+                        clearInterval(pollInterval);
+                        console.error("Task failed or canceled", currentStatus.error);
+                    }
+                } catch (statusErr) {
+                    console.error("Polling error:", statusErr);
+                    clearInterval(pollInterval);
+                }
+            }, 1500); // Check every 1.5 seconds
+
+        } catch (err) {
+            console.error('Generation failed in frontend:', err);
+        }
     };
 
     const handleStep1Submit = () => {
