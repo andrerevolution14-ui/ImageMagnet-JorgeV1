@@ -36,20 +36,24 @@ export async function POST(req: NextRequest) {
         4. FIXTURES: Ultra-modern handles, switches, and high-design architectural details.
         VISUAL STYLE: Photorealistic, cinematic natural light, 8k resolution, magazine quality. KEEP ORIGINAL ROOM GEOMETRY EXACTLY.`;
 
-        // Using standard SDXL - the most reliable for detailed surface transformation
+        // Using jagilley/controlnet-hough - The absolute best for house remodeling
+        // This is Stable Diffusion + architectural line detection (Hough)
         const prediction = await replicate.predictions.create({
-            version: "39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
+            version: "854e961d50116671fa843336423985d3662bba65bdcb6440c9ae151cb820fd6",
             input: {
                 image: image,
                 prompt: prompt,
-                prompt_strength: 0.7, // High enough to change materials, but keeps walls
-                num_inference_steps: 40, // More detail for high-end textures
-                guidance_scale: 12, // Force the prompt instructions to be followed
-                negative_prompt: "old, dusty, dirty, broken, low resolution, distorted, keeping original floor, keeping original ceiling, bad perspective"
+                a_prompt: "best quality, extremely detailed, real architecture, luxury materials, professional lighting, 8k resolution",
+                n_prompt: "longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, distorted, messy, unfinished",
+                num_samples: "1",
+                image_resolution: "768",
+                ddim_steps: 20,
+                scale: 9,
+                eta: 0
             }
         });
 
-        console.log('Prediction created:', prediction.id);
+        console.log('ControlNet Prediction created:', prediction.id);
 
         return NextResponse.json(prediction);
     } catch (error: any) {
