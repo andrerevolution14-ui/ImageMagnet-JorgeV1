@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
                 guidance_scale: 8.0,
                 promax_strength: 0.85,
                 refiner_strength: 0.4,
-                num_inference_steps: 40
+                num_inference_steps: 28
             }
         });
 
