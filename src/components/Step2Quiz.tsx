@@ -12,6 +12,36 @@ interface Step2Props {
 
 export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
     const [currentSubStep, setCurrentSubStep] = useState(1);
+    const [emailError, setEmailError] = useState<string | null>(null);
+
+    const DISPOSABLE_DOMAINS = [
+        'temp-mail.org', '10minutemail.com', 'guerillamail.com', 'mailinator.com',
+        'yopmail.com', 'throwawaymail.com', 'guerrillamail.net', 'sharklasers.com',
+        'tmail.ws', 'tempmail.com', 'getnada.com', 'dispostable.com', 'temp-mail.ru',
+        'dropmail.me', 'anonymousemail.me', 'crazymailing.com', 'maildrop.cc'
+    ];
+
+    const validateEmail = (email: string) => {
+        if (!email) {
+            setEmailError(null);
+            return false;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setEmailError("Por favor, introduza um email válido.");
+            return false;
+        }
+
+        const domain = email.split('@')[1]?.toLowerCase();
+        if (DISPOSABLE_DOMAINS.includes(domain)) {
+            setEmailError("Emails temporários não são permitidos.");
+            return false;
+        }
+
+        setEmailError(null);
+        return true;
+    };
 
     const handleNextSubStep = () => {
         if (currentSubStep < 3) {
@@ -178,14 +208,18 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                                     type="email"
                                     placeholder="O seu Email"
                                     value={data.email}
-                                    onChange={(e) => updateData({ email: e.target.value })}
+                                    onChange={(e) => {
+                                        const email = e.target.value;
+                                        updateData({ email });
+                                        validateEmail(email);
+                                    }}
                                     style={{
                                         width: '100%',
                                         height: '64px',
                                         paddingLeft: '56px',
                                         paddingRight: '24px',
                                         background: 'white',
-                                        border: '2px solid #e2e8f0',
+                                        border: `2px solid ${emailError ? '#ef4444' : '#e2e8f0'}`,
                                         borderRadius: '16px',
                                         fontSize: '18px',
                                         fontWeight: 500,
@@ -194,15 +228,27 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                                         transition: 'all 0.2s ease'
                                     }}
                                     onFocus={(e) => {
-                                        e.currentTarget.style.borderColor = '#3b82f6';
-                                        e.currentTarget.style.boxShadow = '0 0 0 4px rgba(59, 130, 246, 0.1)';
+                                        e.currentTarget.style.borderColor = emailError ? '#ef4444' : '#3b82f6';
+                                        e.currentTarget.style.boxShadow = emailError ? '0 0 0 4px rgba(239, 68, 68, 0.1)' : '0 0 0 4px rgba(59, 130, 246, 0.1)';
                                     }}
                                     onBlur={(e) => {
-                                        e.currentTarget.style.borderColor = '#e2e8f0';
+                                        e.currentTarget.style.borderColor = emailError ? '#ef4444' : '#e2e8f0';
                                         e.currentTarget.style.boxShadow = 'none';
                                     }}
                                 />
                             </div>
+
+                            {emailError && (
+                                <div style={{
+                                    color: '#ef4444',
+                                    fontSize: '14px',
+                                    fontWeight: 600,
+                                    paddingLeft: '4px',
+                                    marginTop: '-8px'
+                                }}>
+                                    ⚠️ {emailError}
+                                </div>
+                            )}
 
                             {/* Privacy explanation */}
                             <div style={{
@@ -224,7 +270,7 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
 
                         <button
                             type="button"
-                            disabled={!data.email}
+                            disabled={!!emailError || !data.email}
                             onClick={handleNextSubStep}
                             style={{
                                 width: '100%',
@@ -235,13 +281,13 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                                 fontSize: '20px',
                                 color: 'white',
                                 background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #db2777 100%)',
-                                boxShadow: '0 10px 30px rgba(37, 99, 235, 0.4)',
-                                cursor: data.email ? 'pointer' : 'not-allowed',
-                                opacity: data.email ? 1 : 0.5,
+                                boxShadow: (emailError || !data.email) ? 'none' : '0 10px 30px rgba(37, 99, 235, 0.4)',
+                                cursor: (emailError || !data.email) ? 'not-allowed' : 'pointer',
+                                opacity: (emailError || !data.email) ? 0.5 : 1,
                                 transition: 'all 0.3s ease'
                             }}
                         >
-                            {data.email ? '✨ Ver Meu Projeto' : 'Introduza o seu e-mail'}
+                            {emailError ? 'Email Inválido' : (data.email ? '✨ Ver Meu Projeto' : 'Introduza o seu e-mail')}
                         </button>
                     </div>
                 )}
