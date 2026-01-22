@@ -42,10 +42,10 @@ export async function POST(req: NextRequest) {
             input: {
                 image: image,
                 prompt: prompt,
-                prompt_strength: 0.5,
-                num_inference_steps: 30,
-                guidance_scale: 7.5,
-                negative_prompt: "distorted, blurry, fake, cartoon, drawing, painting, bad furniture, messy room, low quality, warped walls, extra legs, deformed"
+                prompt_strength: 0.7, // High enough to change materials, but keeps walls
+                num_inference_steps: 40, // More detail for high-end textures
+                guidance_scale: 12, // Force the prompt instructions to be followed
+                negative_prompt: "old, dusty, dirty, broken, low resolution, distorted, keeping original floor, keeping original ceiling, bad perspective"
             }
         });
 
