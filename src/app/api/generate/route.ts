@@ -36,23 +36,25 @@ export async function POST(req: NextRequest) {
         4. FIXTURES: Ultra-modern handles, switches, and high-design architectural details.
         VISUAL STYLE: Photorealistic, cinematic natural light, 8k resolution, magazine quality. KEEP ORIGINAL ROOM GEOMETRY EXACTLY.`;
 
-        // Using FLUX with ControlNet Canny - The absolute highest quality for architecture
-        // This ensures the room structure is 100% preserved while changing materials
+        // Using FLUX Fill Dev - The state-of-the-art model from Black Forest Labs
+        // We use a 1x1 white pixel mask to tell the AI to "refill" the whole image area
+        const fullMask = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=";
+
         const prediction = await replicate.predictions.create({
-            version: "a4369e5d677a288414a3838a4d3393b482d8c3397960fc5d4c887fb7349b1ca2",
+            model: "black-forest-labs/flux-fill-dev",
             input: {
-                control_image: image, // Canny control image
+                image: image,
+                mask: fullMask, // Tells FLUX to process the entire area
                 prompt: prompt,
-                control_type: "canny",
-                num_steps: 25,
-                guidance: 3.5,
-                conditioning_scale: 0.9, // High structural preservation
+                guidance: 30, // High guidance for high-end results
+                num_steps: 30,
                 output_format: "jpg",
-                output_quality: 90
+                output_quality: 90,
+                prompt_upsampling: true // Improves the detail of materials
             }
         });
 
-        console.log('Flux ControlNet Prediction created:', prediction.id);
+        console.log('Flux Fill Prediction created:', prediction.id);
 
         if (prediction.error) {
             return NextResponse.json({ error: prediction.error }, { status: 500 });
