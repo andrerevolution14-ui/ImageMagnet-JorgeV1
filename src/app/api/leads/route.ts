@@ -5,16 +5,16 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
         const { email, question_1, question_2 } = body;
 
-        console.log("Saving lead to PocketBase. Payload:", { email, question_1, question_2 });
+        console.log("Saving lead to ImageMagnet_JorgeV1. Payload:", { email, question_1, question_2 });
 
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 8000);
 
         try {
-            const response = await fetch('http://76.13.11.36:8090/api/collections/leads/records', {
+            const response = await fetch('http://76.13.11.36:8090/api/collections/ImageMagnet_JorgeV1/records', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, question_1, question_2 }),
+                body: JSON.stringify({ Email: email, question_1, question_2 }),
                 signal: controller.signal
             });
 
