@@ -30,8 +30,8 @@ export default function Step3Result({ data }: Step3Props) {
             {/* Success Badge */}
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
                 <div style={{
-                    background: 'linear-gradient(135deg, #22c55e, #16a34a)',
-                    color: 'white',
+                    background: '#f0fdf4',
+                    color: '#16a34a',
                     padding: '6px 14px',
                     borderRadius: '9999px',
                     fontSize: '11px',
@@ -39,7 +39,7 @@ export default function Step3Result({ data }: Step3Props) {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px',
-                    boxShadow: '0 4px 12px rgba(34, 197, 94, 0.3)'
+                    border: '1px solid #bbf7d0'
                 }}>
                     <CheckCircle2 size={14} />
                     PROJETO CONCLUÍDO

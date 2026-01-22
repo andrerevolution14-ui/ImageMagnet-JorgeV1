@@ -43,15 +43,15 @@ export default function Step1Hook({ data, updateData, onNext }: Step1Props) {
                     style={{
                         display: 'inline-block',
                         padding: '8px 16px',
-                        background: 'linear-gradient(135deg, #dbeafe, #ede9fe)',
+                        background: '#f1f5f9',
                         color: '#2563eb',
                         fontWeight: 700,
-                        fontSize: '12px',
+                        fontSize: '11px',
                         textTransform: 'uppercase',
                         letterSpacing: '0.05em',
                         borderRadius: '9999px',
                         marginBottom: '24px',
-                        boxShadow: '0 2px 8px rgba(37, 99, 235, 0.15)'
+                        border: '1px solid #e2e8f0'
                     }}
                 >
                     ⚡ Visualização IA Gratuita
@@ -72,8 +72,8 @@ export default function Step1Hook({ data, updateData, onNext }: Step1Props) {
             <div className="space-y-6">
                 {/* Upload Area */}
                 <div
-                    className={`glass-card p-6 border-dashed border-2 transition-all cursor-pointer flex flex-col items-center justify-center text-center hover:border-primary hover:bg-primary/5 ${isDragging ? 'border-primary bg-primary/10 scale-105' : 'border-glass-border'}`}
-                    style={{ minHeight: '280px' }}
+                    className={`glass-card p-6 border-dashed border-2 transition-all cursor-pointer flex flex-col items-center justify-center text-center hover:border-primary hover:bg-slate-50 ${isDragging ? 'border-primary bg-slate-100 scale-105' : 'border-slate-200'}`}
+                    style={{ minHeight: '280px', background: '#ffffff' }}
                     onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
                     onDragLeave={() => setIsDragging(false)}
                     onDrop={(e) => {
@@ -98,7 +98,8 @@ export default function Step1Hook({ data, updateData, onNext }: Step1Props) {
                             <div style={{
                                 marginTop: '16px',
                                 padding: '12px',
-                                background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(124, 58, 237, 0.1))',
+                                background: '#f8fafc',
+                                border: '1px solid #e2e8f0',
                                 color: '#2563eb',
                                 borderRadius: '12px',
                                 fontSize: '14px',

@@ -45,15 +45,15 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                 <span style={{
                     display: 'inline-block',
                     padding: '8px 16px',
-                    background: 'linear-gradient(135deg, #dbeafe, #ede9fe)',
+                    background: '#f1f5f9',
                     color: '#2563eb',
                     fontWeight: 700,
-                    fontSize: '12px',
+                    fontSize: '11px',
                     textTransform: 'uppercase',
                     letterSpacing: '0.05em',
                     borderRadius: '9999px',
                     marginBottom: '24px',
-                    boxShadow: '0 2px 8px rgba(37, 99, 235, 0.15)'
+                    border: '1px solid #e2e8f0'
                 }}>
                     Questão {currentSubStep} de 3
                 </span>
@@ -247,8 +247,8 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                                 alignItems: 'flex-start',
                                 gap: '12px',
                                 padding: '16px',
-                                background: 'linear-gradient(135deg, #dbeafe, #ede9fe)',
-                                border: '2px solid #bfdbfe',
+                                background: '#f8fafc',
+                                border: '1px solid #e2e8f0',
                                 borderRadius: '12px'
                             }}>
                                 <Shield style={{ color: '#2563eb', flexShrink: 0, marginTop: '2px' }} size={20} />

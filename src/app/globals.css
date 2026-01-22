@@ -30,12 +30,11 @@
 }
 
 body {
-    background: var(--background);
+    background: #ffffff !important;
     color: var(--foreground);
     font-family: 'Outfit', sans-serif;
     overflow-x: hidden;
     line-height: 1.5;
-    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Layout Utilities */
@@ -556,12 +555,10 @@ body {
 }
 
 .glass-card {
-    background: var(--glass);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--glass-border);
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
     border-radius: 24px;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
 .btn-primary {
@@ -732,7 +729,9 @@ body {
     .sm\:max-h-\[280px\] {
         max-height: 280px;
     }
-}/* Hero Title - Extra Chamativo */
+}
+
+/* Hero Title - Extra Chamativo */
 .hero-title {
     font-size: 2rem;
     font-weight: 800;

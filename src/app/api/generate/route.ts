@@ -28,22 +28,22 @@ export async function POST(req: NextRequest) {
         // > 0.65 = Hallucinations (Walls moving, distortion)
         // 0.55 = Perfect balance for changing materials/furniture while keeping walls fixed.
 
-        const prompt = `Highly detailed architectural photography of a ${zone} remodeled in ${style} style. 
-        Luxury interior design, professional lighting, soft natural sunlight from windows. 
-        Premium ${style} furniture, realistic textures on flooring and walls.
-        Magazine quality, clean, photorealistic, 8k resolution.
-        The layout and structure of the room must remain identical to the original image.`;
+        const prompt = `Professional high-end interior design photography of a ${zone}, remodeled in ${style} style. 
+        Luxury materials, soft window lighting, cinematic architectural photography, clean and bright. 
+        Highly detailed textures, photorealistic, 8k resolution.
+        The structural layout, windows, and walls MUST remain identical to the original.`;
 
+        // Using SDXL Lightning for extreme speed and high quality on Vercel
         const output = await replicate.run(
-            "stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
+            "stability-ai/sdxl-lightning-4step:727e49a643e13005eafda46da92931754406606fbf63266e1336fa999e5258e7",
             {
                 input: {
                     image: image,
                     prompt: prompt,
-                    prompt_strength: 0.5, // 50/50 balance for realism
-                    num_inference_steps: 30,
-                    guidance_scale: 7.5, // Standard scale to avoid "fried" colors and AI artifacts
-                    negative_prompt: "distorted, fake, cartoon, drawing, painting, oversaturated, weird colors, messy, blurry, low quality, deformed furniture"
+                    prompt_strength: 0.5, // Perfect balance for renovation
+                    num_inference_steps: 4, // Lightning only needs 4 steps for amazing quality
+                    guidance_scale: 1, // Lightning uses low guidance
+                    negative_prompt: "distorted, blurry, fake, cartoon, drawing, painting, bad furniture, messy room, low quality, warped walls"
                 }
             }
         );
