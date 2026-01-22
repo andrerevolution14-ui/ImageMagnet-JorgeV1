@@ -18,7 +18,11 @@ export async function POST(req: NextRequest) {
             const response = await fetch('http://76.13.11.36:8090/api/collections/ImageMagnet_JorgeV1/records', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ Email: email, question_1, question_2 }),
+                body: JSON.stringify({
+                    Email: email,
+                    Question_1: question_1.toUpperCase(),
+                    Question_2: question_2.toUpperCase()
+                }),
                 signal: controller.signal
             });
 
