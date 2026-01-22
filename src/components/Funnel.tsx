@@ -41,7 +41,11 @@ export default function Funnel() {
 
     const sendLeadToPocketBase = async (finalData: FunnelData) => {
         try {
-            console.log("Sending lead to backend API...");
+            console.log("Sending lead to backend API with data:", {
+                email: finalData.email,
+                q1: finalData.question_1,
+                q2: finalData.question_2
+            });
             const response = await fetch('/api/leads', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

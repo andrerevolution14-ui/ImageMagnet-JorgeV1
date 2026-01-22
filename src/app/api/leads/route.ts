@@ -3,9 +3,13 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
+        console.log("Saving lead to ImageMagnet_JorgeV1. Received Body:", JSON.stringify(body));
         const { email, question_1, question_2 } = body;
 
-        console.log("Saving lead to ImageMagnet_JorgeV1. Payload:", { email, question_1, question_2 });
+        if (!email) {
+            console.error("Error: Received empty email from frontend");
+            return NextResponse.json({ error: "Email is required" }, { status: 400 });
+        }
 
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 8000);
