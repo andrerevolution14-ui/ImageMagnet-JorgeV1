@@ -37,23 +37,23 @@ export async function POST(req: NextRequest) {
         5. Modern drop ceiling with recessed architectural LED lighting.
         STYLE: Professional high-end magazine photography, cinematic lighting, 8k resolution, photorealistic, no distortion, no hallucinations.`;
 
-        // Using FLUX ControlNet Canny - Best for maintaining "SENSE" and structure
-        // This forces the AI to respect every line of the original room
+        // Using Specialized Interior Design SDXL - Purpose-built for high-end renovation
+        // Model: rocketdigitalai/interior-design-sdxl
         const prediction = await replicate.predictions.create({
-            version: "a4369e5d677a288414a3838a4d3393b482d8c3397960fc5d4c887fb7349b1ca2",
+            version: "a3c091059a25590ce2d5ea13651fab63f447f21760e50c358d4b850e844f59ee",
             input: {
-                control_image: image,
+                image: image,
                 prompt: prompt,
-                control_type: "canny",
-                num_steps: 28,
-                guidance: 3.5,
-                conditioning_scale: 0.95, // ABSOLUTE PRESERVATION of the room structure
-                output_format: "jpg",
-                output_quality: 90
+                negative_prompt: "distorted, low quality, blurry, fuzzy, messy, cluttered, out of focus, watermark, text, signature, bad architecture, unrealistic, deformed walls, crooked floors, extra windows, extra doors",
+                depth_strength: 0.85,
+                guidance_scale: 8.0,
+                promax_strength: 0.85,
+                refiner_strength: 0.4,
+                num_inference_steps: 40
             }
         });
 
-        console.log('Flux ControlNet Prediction created:', prediction.id);
+        console.log('Interior Design SDXL Prediction created:', prediction.id);
 
         if (prediction.error) {
             return NextResponse.json({ error: prediction.error }, { status: 500 });

@@ -23,8 +23,8 @@ export default function Funnel() {
     const [step, setStep] = useState(1);
     const [data, setData] = useState<FunnelData>({
         image: null,
-        style: 'Moderno',
-        zone: 'Sala',
+        style: 'modern luxury',
+        zone: 'living room',
         remodelDate: '',
         objective: '',
         name: '',
