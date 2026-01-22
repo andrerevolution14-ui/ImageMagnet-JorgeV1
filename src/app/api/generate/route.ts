@@ -43,10 +43,10 @@ export async function POST(req: NextRequest) {
                 input: {
                     image: image,
                     prompt: prompt,
-                    prompt_strength: 0.55, // 55% Change - The Sweet Spot for renovation
-                    num_inference_steps: 50,
-                    guidance_scale: 14, // High guidance to force the style change firmly
-                    negative_prompt: "broken geometry, crooked walls, floating furniture, messy, dirty, old, construction site, ruby, blur, low resolution, distorted windows, weird perspective"
+                    prompt_strength: 0.55,
+                    num_inference_steps: 30, // Optimized for speed on Vercel
+                    guidance_scale: 12, // Slightly lower for faster convergence
+                    negative_prompt: "broken geometry, crooked walls, floating furniture, messy, dirty, old, construction site, blur, low resolution, distorted windows, weird perspective"
                 }
             }
         );

@@ -40,23 +40,37 @@ export default function Funnel() {
     const startGeneration = async () => {
         if (!data.image) return;
 
-        // Trigger background generation
+        console.log("Starting generation...");
         fetch('/api/generate', {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify({
                 image: data.image,
                 style: data.style,
                 zone: data.zone,
             }),
         })
-            .then(res => res.json())
+            .then(async res => {
+                if (!res.ok) {
+                    const text = await res.text();
+                    throw new Error(`Server error: ${res.status} - ${text}`);
+                }
+                return res.json();
+            })
             .then(result => {
-                console.log("Generation result:", result);
+                console.log("Generation result success:", result);
                 if (result.output) {
                     updateData({ outputImage: result.output });
+                } else {
+                    console.error("No output in result:", result);
                 }
             })
-            .catch(err => console.error('Generation failed', err));
+            .catch(err => {
+                console.error('Generation failed in frontend:', err);
+                // We could set an error state here to show the user
+            });
     };
 
     const handleStep1Submit = () => {

@@ -6,6 +6,8 @@ export const metadata: Metadata = {
     description: "Veja o potencial oculto da sua casa em 30 segundos. Ferramenta de visualização inteligente para proprietários na zona de Aveiro.",
 };
 
+import { Analytics } from "@vercel/analytics/next"
+
 export default function RootLayout({
     children,
 }: Readonly<{
@@ -13,7 +15,10 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="pt">
-            <body>{children}</body>
+            <body>
+                {children}
+                <Analytics />
+            </body>
         </html>
     );
 }
