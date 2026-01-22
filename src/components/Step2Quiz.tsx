@@ -173,43 +173,6 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                                     top: '50%',
                                     transform: 'translateY(-50%)',
                                     fontSize: '24px'
-                                }}>👤</span>
-                                <input
-                                    type="text"
-                                    placeholder="O seu Nome"
-                                    value={data.name}
-                                    onChange={(e) => updateData({ name: e.target.value })}
-                                    style={{
-                                        width: '100%',
-                                        height: '64px',
-                                        paddingLeft: '56px',
-                                        paddingRight: '24px',
-                                        background: 'white',
-                                        border: '2px solid #e2e8f0',
-                                        borderRadius: '16px',
-                                        fontSize: '18px',
-                                        fontWeight: 500,
-                                        color: '#0f172a',
-                                        outline: 'none',
-                                        transition: 'all 0.2s ease'
-                                    }}
-                                    onFocus={(e) => {
-                                        e.currentTarget.style.borderColor = '#3b82f6';
-                                        e.currentTarget.style.boxShadow = '0 0 0 4px rgba(59, 130, 246, 0.1)';
-                                    }}
-                                    onBlur={(e) => {
-                                        e.currentTarget.style.borderColor = '#e2e8f0';
-                                        e.currentTarget.style.boxShadow = 'none';
-                                    }}
-                                />
-                            </div>
-                            <div style={{ position: 'relative' }}>
-                                <span style={{
-                                    position: 'absolute',
-                                    left: '16px',
-                                    top: '50%',
-                                    transform: 'translateY(-50%)',
-                                    fontSize: '24px'
                                 }}>📧</span>
                                 <input
                                     type="email"
@@ -261,7 +224,7 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
 
                         <button
                             type="button"
-                            disabled={!data.name || !data.email}
+                            disabled={!data.email}
                             onClick={handleNextSubStep}
                             style={{
                                 width: '100%',
@@ -273,12 +236,12 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                                 color: 'white',
                                 background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #db2777 100%)',
                                 boxShadow: '0 10px 30px rgba(37, 99, 235, 0.4)',
-                                cursor: data.name && data.email ? 'pointer' : 'not-allowed',
-                                opacity: data.name && data.email ? 1 : 0.5,
+                                cursor: data.email ? 'pointer' : 'not-allowed',
+                                opacity: data.email ? 1 : 0.5,
                                 transition: 'all 0.3s ease'
                             }}
                         >
-                            {data.name && data.email ? '✨ Ver Meu Projeto' : 'Preencha os dados acima'}
+                            {data.email ? '✨ Ver Meu Projeto' : 'Introduza o seu e-mail'}
                         </button>
                     </div>
                 )}
