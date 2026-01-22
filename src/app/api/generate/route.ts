@@ -36,21 +36,20 @@ export async function POST(req: NextRequest) {
         4. FIXTURES: Ultra-modern handles, switches, and high-design architectural details.
         VISUAL STYLE: Photorealistic, cinematic natural light, 8k resolution, magazine quality. KEEP ORIGINAL ROOM GEOMETRY EXACTLY.`;
 
-        // Using the most stable and guaranteed version of SDXL (Stable Diffusion XL)
-        // Set to high strength (0.8) to ensure the requested radical changes occur
+        // Using the "Classic" Stable Diffusion v1.5 as requested
         const prediction = await replicate.predictions.create({
-            version: "39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
+            version: "a9758cbfbddec231e34e40e0cf47669d056fc1c19d3632cf97b13867c2936239",
             input: {
-                image: image,
+                init_image: image,
                 prompt: prompt,
-                prompt_strength: 0.8, // TRANSFORM POWER: 80% change allowed
-                num_inference_steps: 40,
-                guidance_scale: 15, // Force obedience to the transformation prompt
+                prompt_strength: 0.8, // Force total renovation
+                num_inference_steps: 50,
+                guidance_scale: 12,
                 negative_prompt: "lowres, bad quality, blurry, distorted, messy, unfinished, unrealistic, old materials, original flooring, original ceiling"
             }
         });
 
-        console.log('SDXL Prediction created:', prediction.id);
+        console.log('Stable Diffusion 1.5 Prediction created:', prediction.id);
 
         if (prediction.error) {
             return NextResponse.json({ error: prediction.error }, { status: 500 });
