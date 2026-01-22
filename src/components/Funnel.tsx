@@ -41,8 +41,8 @@ export default function Funnel() {
 
     const sendLeadToPocketBase = async (finalData: FunnelData) => {
         try {
-            console.log("Sending lead to PocketBase...");
-            const response = await fetch('http://76.13.11.36:8090/api/collections/leads/records', {
+            console.log("Sending lead to backend API...");
+            const response = await fetch('/api/leads', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -53,12 +53,12 @@ export default function Funnel() {
             });
 
             if (response.ok) {
-                console.log("Lead captured successfully in PocketBase");
+                console.log("Lead captured successfully in PocketBase (via backend)");
             } else {
-                console.error("Failed to capture lead in PocketBase", response.statusText);
+                console.error("Failed to capture lead via backend API");
             }
         } catch (error) {
-            console.error("Error sending lead to PocketBase:", error);
+            console.error("Error sending lead to backend:", error);
         }
     };
 
