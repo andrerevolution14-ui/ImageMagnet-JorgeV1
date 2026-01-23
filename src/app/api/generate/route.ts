@@ -44,33 +44,28 @@ export async function POST(req: NextRequest) {
         // --- Preprocess input image (resize to 1024px max) ---
         const resizedImage = await resizeBase64Image(image);
 
-        // ---------- Build prompt based on style/zone (HIGH-FIDELITY SURFACE REFRESH) ----------
-        const prompt = `Premium architectural photograph of the ${zone} in the original image, with a high-end ${style} renovation. 
-STRUCTURE: Every wall, window, door, and furniture piece remains in its exact pixel-perfect position. 
-SURFACES: Replace textures with luxurious ${style} materials. Floors are polished ${style}, walls have smooth professional ${style} finishes. 
-LIGHTING & AESTHETIC: Cinematic natural sunlight, volumetric soft shadows, 8k UHD, photoreal, shot on Phase One XF, 80mm lens, extremely detailed textures, interior design magazine award-winning quality. 
-NO ARCHITECTURAL CHANGES.`;
-
-        // ---------- Prediction using Image-to-Image (Img2Img) for 100% Structural Consistency ----------
-        // Model: lucataco/flux-dev-lora
-        console.log("Fetching version and generating with FLUX Dev Lora (Enhanced Visuals)...");
-        const model = await replicate.models.get("lucataco", "flux-dev-lora");
+        // ---------- Prediction using ControlNet for 100% Structural Consistency + Radical Renovation ----------
+        // Model: xlabs-ai/flux-dev-controlnet
+        console.log("Fetching version and generating with XLabs ControlNet (Depth) for total renovation...");
+        const model = await replicate.models.get("xlabs-ai", "flux-dev-controlnet");
         if (!model.latest_version) {
-            throw new Error("Could not find the latest version for the FLUX model.");
+            throw new Error("Could not find the latest version for the ControlNet model.");
         }
 
         const prediction = await replicate.predictions.create({
             version: model.latest_version.id,
             input: {
-                prompt: prompt,
-                image: resizedImage,
-                prompt_strength: 0.68, // Slightly increased to allow more "beauty" without losing structure
-                num_inference_steps: 35, // More steps for finer textures
-                guidance_scale: 4.5,     // Stronger adherence to the "luxury" aspect of the prompt
+                prompt: `A total ${style} interior design makeover of this ${zone}. TRANSFORM EVERYTHING: Brand new ${style} materials on all surfaces. Luxurious ${style} flooring, modern ${style} wall textures, high-end designer furniture finishes. Cinematic lighting, architectural photography style, 8k, photorealistic. The original 3D layout of the room and furniture MUST be preserved exactly, but the visual style must be completely new and premium.`,
+                control_image: resizedImage,
+                control_type: "depth",
+                control_strength: 0.9, // Strong fidelity to 3D space
+                steps: 30,
+                guidance_scale: 5.0,     // Stronger push for the prompt's aesthetic
+                negative_prompt: "structural changes, new windows, new doors, changing room dimensions, outdoor, garden, blurry, low quality",
             },
         });
 
-        console.log('Flux Fill Dev Prediction created:', prediction.id);
+        console.log('ControlNet Canny Prediction created:', prediction.id);
 
         if (prediction.error) {
             return NextResponse.json({ error: prediction.error }, { status: 500 });
