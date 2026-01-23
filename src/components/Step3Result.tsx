@@ -141,7 +141,7 @@ export default function Step3Result({ data }: Step3Props) {
                             </span>
                             <span style={{ fontSize: '12px', color: '#64748b', maxWidth: '80%' }}>
                                 {seconds < 15 ? "Isto demora apenas alguns segundos" :
-                                    seconds < 35 ? "Estamos a aplicar texturas de alta definição" :
+                                    seconds < 35 ? "Estamos a ajustar os materiais e iluminação..." :
                                         "A IA está a 'aquecer'. Não feche esta janela."}
                             </span>
 

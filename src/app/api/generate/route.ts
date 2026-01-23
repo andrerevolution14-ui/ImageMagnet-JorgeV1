@@ -23,6 +23,15 @@ export async function POST(req: NextRequest) {
 
         console.log(`Generating for ${zone} in ${style}...`);
 
+        // Map styles to more descriptive English terms to avoid "futuristic" interpretations
+        const styleMap: Record<string, string> = {
+            'Moderno': 'modern and contemporary',
+            'Minimalista': 'minimalist and clean',
+            'Rústico': 'rustic and warm'
+        };
+
+        const descriptiveStyle = styleMap[style] || style;
+
         // Prompt will be built later with ControlNet integration
 
 
@@ -57,14 +66,14 @@ export async function POST(req: NextRequest) {
         const prediction = await replicate.predictions.create({
             version: model.latest_version.id,
             input: {
-                prompt: `Masterpiece architectural photography of this room, ${style} luxury makeover. ULTRA-HIGH DEFINITION: Every material is crystal clear, hyper-realistic textures on the ${style} sofa, walls, and flooring. The window position, room dimensions, and furniture layout are strictly preserved from the original image. Cinematic lighting, sharp focus, 8k UHD, photoreal, professional interior design magazine quality. NO BLUR.`,
+                prompt: `Realistic professional architectural photography of this ${zone}, ${descriptiveStyle} renovation. Natural textures, real-world materials, authentic furniture. The window position, room dimensions, and structural layout are strictly preserved from the original image. Soft natural lighting, sharp focus, grounded professional interior design. Cozy and lived-in feel, realistic home environment, no futuristic elements.`,
                 control_image: resizedImage,
                 control_type: "canny",
                 control_strength: 0.85,
-                steps: 40,             // High detail (safe value)
-                guidance_scale: 5.0,   // Maximum allowed value by this model
+                steps: 40,
+                guidance_scale: 4.0,   // Slightly lower guidance for more natural, less "AI-generated" look
                 output_quality: 100,
-                negative_prompt: "blur, low quality, distorted, extra furniture, moving walls, modifying windows, messy, low resolution, grainy",
+                negative_prompt: "futuristic, neon, sci-fi, artificial purple light, space-age, plastic, glossy, blur, distorted, extra furniture, moving walls, modifying windows, low resolution",
             },
         });
 
