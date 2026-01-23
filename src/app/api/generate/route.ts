@@ -44,33 +44,25 @@ export async function POST(req: NextRequest) {
         // --- Preprocess input image (resize to 1024px max) ---
         const resizedImage = await resizeBase64Image(image);
 
-        // ---------- Build prompt based on style/zone (STRICT RENOVATION) ----------
-        const prompt = `A professional ${style} style renovation of the existing ${zone}. 
-STRICT RULES: 
-1. The architectural layout, wall positions, and window/door locations MUST stay exactly the same.
-2. The outdoor garden/patio visible through glass doors MUST remain an outdoor area; do not turn it into an indoor room.
-3. Keep the furniture in their original positions, just update their materials and style to ${style}.
-4. NO NEW WINDOWS or doors should be added to the walls.
-Update only the textures: high-end ${style} flooring, wall finishes, and modern lighting. Magazine quality, 8k UHD.`;
+        // ---------- Build prompt based on style/zone (SURFACE REPLACEMENT ONLY) ----------
+        // We use a passive prompt to prevent the AI from "building" new architecture.
+        const prompt = `Professional photo of the exact same room in the image, but with surfaces updated to ${style} style. 
+The walls, floor, furniture layout, and windows are identical to the original image. 
+Replace only the materials: update the floor to premium ${style} flooring, paint the walls in ${style} colors, and refresh the furniture textures. 
+Magazine quality, sharp focus, natural lighting, 8k UHD.`;
 
-        const negative_prompt = "additional windows, additional doors, converting garden to indoor room, changing wall positions, changing floor plan, distorted architecture, indoor furniture in outdoor garden";
-
-        // ---------- Prediction using ControlNet for structural integrity ----------
-        // Model: xlabs-ai/flux-dev-controlnet
-        console.log("Fetching latest version for xlabs-ai/flux-dev-controlnet...");
-        const model = await replicate.models.get("xlabs-ai", "flux-dev-controlnet");
-        if (!model.latest_version) {
-            throw new Error("Could not find the latest version for the ControlNet model.");
-        }
-
+        // ---------- Prediction using Image-to-Image (Img2Img) for 100% Structural Consistency ----------
+        // Model: lucataco/flux-dev-lora
+        // Using prompt_strength: 0.6 ensures we change colors/textures but KEEP ALL WALLS AND FURNITURE.
+        console.log("Using FLUX Dev Lora for high-fidelity Image-to-Image...");
         const prediction = await replicate.predictions.create({
-            version: model.latest_version.id,
+            // Version ID for lucataco/flux-dev-lora
+            version: "091495765fa5ef2725a175a57b3eab66b3c9d39c22d30410f2ede68a1fed5a23",
             input: {
                 prompt: prompt,
-                negative_prompt: negative_prompt, // Prevent unwanted structural changes
-                control_image: resizedImage,
-                control_type: "canny", // Canny is more strict with edges/lines than depth
-                steps: 28,
+                image: resizedImage, // Original image as the base
+                prompt_strength: 0.6, // MAGIC NUMBER: High enough to change tiles/paint, low enough to keep walls.
+                num_inference_steps: 30,
                 guidance_scale: 3.5,
             },
         });
