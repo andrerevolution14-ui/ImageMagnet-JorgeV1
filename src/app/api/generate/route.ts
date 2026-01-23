@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Replicate from 'replicate';
+import sharp from 'sharp';
 
 const replicate = new Replicate({
     auth: process.env.REPLICATE_API_TOKEN || '',
@@ -24,7 +25,7 @@ export async function POST(req: NextRequest) {
 
         // Prompt will be built later with ControlNet integration
 
-        import sharp from 'sharp';
+
 
         // Helper to resize a base64 image to max 1024px width (preserving aspect ratio)
         const resizeBase64Image = async (base64: string): Promise<string> => {
