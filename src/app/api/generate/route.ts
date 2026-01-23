@@ -44,17 +44,16 @@ export async function POST(req: NextRequest) {
         // --- Preprocess input image (resize to 1024px max) ---
         const resizedImage = await resizeBase64Image(image);
 
-        // ---------- Build prompt based on style/zone (SURFACE REPLACEMENT ONLY) ----------
-        // We use a passive prompt to prevent the AI from "building" new architecture.
-        const prompt = `Professional photo of the exact same room in the image, but with surfaces updated to ${style} style. 
-The walls, floor, furniture layout, and windows are identical to the original image. 
-Replace only the materials: update the floor to premium ${style} flooring, paint the walls in ${style} colors, and refresh the furniture textures. 
-Magazine quality, sharp focus, natural lighting, 8k UHD.`;
+        // ---------- Build prompt based on style/zone (HIGH-FIDELITY SURFACE REFRESH) ----------
+        const prompt = `Premium architectural photograph of the ${zone} in the original image, with a high-end ${style} renovation. 
+STRUCTURE: Every wall, window, door, and furniture piece remains in its exact pixel-perfect position. 
+SURFACES: Replace textures with luxurious ${style} materials. Floors are polished ${style}, walls have smooth professional ${style} finishes. 
+LIGHTING & AESTHETIC: Cinematic natural sunlight, volumetric soft shadows, 8k UHD, photoreal, shot on Phase One XF, 80mm lens, extremely detailed textures, interior design magazine award-winning quality. 
+NO ARCHITECTURAL CHANGES.`;
 
         // ---------- Prediction using Image-to-Image (Img2Img) for 100% Structural Consistency ----------
         // Model: lucataco/flux-dev-lora
-        // Using prompt_strength: 0.6 ensures we change colors/textures but KEEP ALL WALLS AND FURNITURE.
-        console.log("Fetching version and generating with FLUX Dev Lora...");
+        console.log("Fetching version and generating with FLUX Dev Lora (Enhanced Visuals)...");
         const model = await replicate.models.get("lucataco", "flux-dev-lora");
         if (!model.latest_version) {
             throw new Error("Could not find the latest version for the FLUX model.");
@@ -64,10 +63,10 @@ Magazine quality, sharp focus, natural lighting, 8k UHD.`;
             version: model.latest_version.id,
             input: {
                 prompt: prompt,
-                image: resizedImage, // Original image as the base
-                prompt_strength: 0.6, // MAGIC NUMBER: High enough to change tiles/paint, low enough to keep walls.
-                num_inference_steps: 30,
-                guidance_scale: 3.5,
+                image: resizedImage,
+                prompt_strength: 0.68, // Slightly increased to allow more "beauty" without losing structure
+                num_inference_steps: 35, // More steps for finer textures
+                guidance_scale: 4.5,     // Stronger adherence to the "luxury" aspect of the prompt
             },
         });
 
