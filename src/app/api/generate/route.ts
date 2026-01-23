@@ -44,13 +44,14 @@ export async function POST(req: NextRequest) {
         // --- Preprocess input image (resize to 1024px max) ---
         const resizedImage = await resizeBase64Image(image);
 
-        // --- Build prompt based on style/zone using the detailed template ---
-        const prompt = `High-end architectural photography, a ${zone} professionally renovated in ${style} style. Sharp focus, clean lines, cinematic natural sunlight streaming through windows, 8k UHD, highly detailed textures like polished marble and oak wood. Interior design magazine style, shot on Fujifilm X-T5, 35mm f/1.4 lens, realistic soft shadows, empty room, no people, award-winning decoration.`;
+        // ---------- Build prompt based on style/zone (Preserving structure) ----------
+        const prompt = `Professional architectural photo of a ${zone} renovated in ${style} style. 
+The furniture layout, windows, doors, and architectural structure are strictly preserved from the original. 
+The room is updated with new high-end ${style} materials, polished floors, modern fixtures, and lux finishes. 
+Realistic interior design photography, sharp focus, natural lighting, 8k UHD, highly detailed.`;
 
         // ---------- Prediction using ControlNet for structural integrity ----------
-        // ---------- Prediction using ControlNet for structural integrity ----------
         // Model: xlabs-ai/flux-dev-controlnet
-        // Verified model path on Replicate.
         console.log("Fetching latest version for xlabs-ai/flux-dev-controlnet...");
         const model = await replicate.models.get("xlabs-ai", "flux-dev-controlnet");
         if (!model.latest_version) {
@@ -61,9 +62,9 @@ export async function POST(req: NextRequest) {
             version: model.latest_version.id,
             input: {
                 prompt: prompt,
-                control_image: resizedImage, // xlabs-ai/flux-dev-controlnet expects 'control_image'
-                control_type: "canny",
-                num_inference_steps: 28,
+                control_image: resizedImage,
+                control_type: "depth", // Depth keeps the 'space' and 'volumes' consistent
+                steps: 28,             // Matches model's current schema
                 guidance_scale: 3.5,
             },
         });
