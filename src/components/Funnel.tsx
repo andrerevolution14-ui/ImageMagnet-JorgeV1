@@ -105,50 +105,60 @@ export default function Funnel() {
 
             console.log("Prediction started:", prediction.id);
 
-            // Step 2: Poll for results
-            if (pollRef.current) clearInterval(pollRef.current);
+            // Step 2: Poll for results using a robust recursive timeout (replaces setInterval)
+            const poll = async () => {
+                if (!prediction.id) return;
 
-            pollRef.current = setInterval(async () => {
                 try {
                     const statusRes = await fetch(`/api/predictions/${prediction.id}`);
-                    if (!statusRes.ok) throw new Error("Status check failed");
+                    if (!statusRes.ok) {
+                        console.error("Status check failed on server");
+                        // Don't throw here, try again in next tick
+                    } else {
+                        const currentStatus = await statusRes.json();
+                        console.log("Current status:", currentStatus.status);
 
-                    const currentStatus = await statusRes.json();
-                    console.log("Current status:", currentStatus.status);
+                        if (currentStatus.status === "succeeded") {
+                            const outputUrl = Array.isArray(currentStatus.output)
+                                ? currentStatus.output[0]
+                                : currentStatus.output;
 
-                    if (currentStatus.status === "succeeded") {
-                        if (pollRef.current) clearInterval(pollRef.current);
-                        const outputUrl = Array.isArray(currentStatus.output)
-                            ? currentStatus.output[0]
-                            : currentStatus.output;
-
-                        if (outputUrl) {
-                            updateData({ outputImage: outputUrl, status: 'success' });
-                        } else {
-                            throw new Error("A IA não gerou uma imagem válida.");
+                            if (outputUrl) {
+                                console.log("Success! Image URL received.");
+                                updateData({ outputImage: outputUrl, status: 'success' });
+                                return; // Stop polling
+                            } else {
+                                throw new Error("A IA não gerou uma imagem válida.");
+                            }
+                        } else if (currentStatus.status === "failed" || currentStatus.status === "canceled") {
+                            updateData({ status: 'error', errorMessage: "A IA encontrou um problema ao processar a imagem. Tente uma foto diferente." });
+                            console.error("Task failed or canceled", currentStatus.error);
+                            return; // Stop polling
                         }
-                    } else if (currentStatus.status === "failed" || currentStatus.status === "canceled") {
-                        if (pollRef.current) clearInterval(pollRef.current);
-                        updateData({ status: 'error', errorMessage: "A IA encontrou um problema ao processar a imagem. Tente uma foto diferente." });
-                        console.error("Task failed or canceled", currentStatus.error);
                     }
                 } catch (statusErr: any) {
-                    console.error("Polling error:", statusErr);
+                    console.error("Polling error caught:", statusErr);
                 }
-            }, 1500); // Faster polling (1.5s) for quicker results
 
-            // Safety timeout: stop after 10 minutes (to account for time spent on the quiz)
+                // Schedule next poll if still generating
+                pollRef.current = setTimeout(poll, 2000);
+            };
+
+            // Start polling
+            poll();
+
+            // Safety timeout: stop after 5 minutes (reduced from 10 to be more responsive to issues)
             setTimeout(() => {
                 if (pollRef.current) {
                     setData(prev => {
                         if (prev.status === 'generating' && !prev.outputImage) {
-                            if (pollRef.current) clearInterval(pollRef.current);
+                            clearTimeout(pollRef.current as NodeJS.Timeout);
                             return { ...prev, status: 'error', errorMessage: "O servidor está demorando mais que o normal. Por favor, tente novamente." };
                         }
                         return prev;
                     });
                 }
-            }, 600000);
+            }, 300000);
 
         } catch (err: any) {
             console.error('Generation failed:', err);

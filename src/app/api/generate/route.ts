@@ -46,12 +46,14 @@ export async function POST(req: NextRequest) {
 
         // ---------- Prediction using ControlNet for 100% Structural Consistency + Radical Renovation ----------
         // Model: xlabs-ai/flux-dev-controlnet
-        console.log("Fetching version and generating with XLabs ControlNet (Depth) for total renovation...");
+        console.log(`[API] Fetching model version for xlabs-ai/flux-dev-controlnet...`);
         const model = await replicate.models.get("xlabs-ai", "flux-dev-controlnet");
         if (!model.latest_version) {
+            console.error("[API] Could not find latest version for xlabs-ai/flux-dev-controlnet");
             throw new Error("Could not find the latest version for the ControlNet model.");
         }
 
+        console.log(`[API] Starting prediction for style: ${style}, zone: ${zone}...`);
         const prediction = await replicate.predictions.create({
             version: model.latest_version.id,
             input: {
@@ -65,7 +67,7 @@ export async function POST(req: NextRequest) {
             },
         });
 
-        console.log('ControlNet Canny Prediction created:', prediction.id);
+        console.log('[API] Prediction created successfully:', prediction.id);
 
         if (prediction.error) {
             return NextResponse.json({ error: prediction.error }, { status: 500 });
