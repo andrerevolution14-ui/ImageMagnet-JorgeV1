@@ -48,10 +48,11 @@ export async function POST(req: NextRequest) {
         const prompt = `High-end architectural photography, a ${zone} professionally renovated in ${style} style. Sharp focus, clean lines, cinematic natural sunlight streaming through windows, 8k UHD, highly detailed textures like polished marble and oak wood. Interior design magazine style, shot on Fujifilm X-T5, 35mm f/1.4 lens, realistic soft shadows, empty room, no people, award-winning decoration.`;
 
         // ---------- Prediction using ControlNet for structural integrity ----------
-        // Model: xlabs-ai/flux-dev-controlnet-canny
-        // This model is the industry standard for Flux ControlNet.
-        console.log("Fetching latest version for xlabs-ai/flux-dev-controlnet-canny...");
-        const model = await replicate.models.get("xlabs-ai", "flux-dev-controlnet-canny");
+        // ---------- Prediction using ControlNet for structural integrity ----------
+        // Model: xlabs-ai/flux-dev-controlnet
+        // Verified model path on Replicate.
+        console.log("Fetching latest version for xlabs-ai/flux-dev-controlnet...");
+        const model = await replicate.models.get("xlabs-ai", "flux-dev-controlnet");
         if (!model.latest_version) {
             throw new Error("Could not find the latest version for the ControlNet model.");
         }
@@ -60,11 +61,10 @@ export async function POST(req: NextRequest) {
             version: model.latest_version.id,
             input: {
                 prompt: prompt,
-                condition_image: resizedImage, // xlabs-ai expects 'condition_image'
+                control_image: resizedImage, // xlabs-ai/flux-dev-controlnet expects 'control_image'
                 control_type: "canny",
                 num_inference_steps: 28,
                 guidance_scale: 3.5,
-                image_number: 1,
             },
         });
 
