@@ -22,37 +22,26 @@ export async function POST(req: NextRequest) {
 
         console.log(`Generating for ${zone} in ${style}...`);
 
-        // STRATEGY: "Renovation Mode"
-        // Strength 0.55 is the "Sweet Spot".
-        // < 0.45 = No visible change (Too similar)
-        // > 0.65 = Hallucinations (Walls moving, distortion)
-        // 0.55 = Perfect balance for changing materials/furniture while keeping walls fixed.
+        // Professional architectural photography prompt
+        const prompt = `Professional architectural photography, interior design magazine style, ${zone} fully renovated in ${style}, high-end materials, cinematic natural lighting, 8k UHD, highly detailed, photorealistic, clean lines, luxury furniture.`;
 
-        const prompt = `Award-winning architectural interior photography of a ${zone} in ${style} style. 
-        MANDATORY ELEMENTS: 
-        - High-end luxurious materials, ray-traced reflections, and soft global illumination.
-        - Floor: Professional large-format seamless tiles or premium wide-plank oak wood with realistic grain.
-        - Walls & Ceiling: Ultra-smooth plaster, architectural minimalist skirting, and integrated warm LED lighting.
-        - Lighting: Natural sunlight streaming through windows, cinematic shadows, polished atmosphere.
-        - Quality: Photorealistic, 8k resolution, highly detailed textures, depth of field, sharp focus, magazine quality, no distortion.`;
-
-        // Using Specialized Interior Design SDXL - Purpose-built for high-end renovation
-        // Model: rocketdigitalai/interior-design-sdxl
+        // Using FLUX Fill Dev - Optimized for speed and quality
+        // Model: black-forest-labs/flux-fill-dev
         const prediction = await replicate.predictions.create({
-            version: "a3c091059a25590ce2d5ea13651fab63f447f21760e50c358d4b850e844f59ee",
+            version: "a053f84125613d83e65328a289e14eb6639e10725c243e8fb0c24128e5573f4c",
             input: {
                 image: image,
                 prompt: prompt,
-                negative_prompt: "cartoon, drawing, painting, 3d render, anime, low quality, blurry, distorted architecture, messy, cluttered, out of focus, watermark, low resolution, unrealistic lighting, flat colors",
-                depth_strength: 0.85,
-                guidance_scale: 8.5,
-                promax_strength: 0.9,
-                refiner_strength: 0.5,
-                num_inference_steps: 35
+                num_inference_steps: 20,
+                guidance: 30,
+                megapixels: "1",
+                output_format: "jpg",
+                output_quality: 95,
+                disable_safety_checker: false
             }
         });
 
-        console.log('Interior Design SDXL Prediction created:', prediction.id);
+        console.log('Flux Fill Dev Prediction created:', prediction.id);
 
         if (prediction.error) {
             return NextResponse.json({ error: prediction.error }, { status: 500 });
