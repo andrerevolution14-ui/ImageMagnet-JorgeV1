@@ -47,17 +47,20 @@ export async function POST(req: NextRequest) {
         // --- Build prompt based on style/zone using the detailed template ---
         const prompt = `High-end architectural photography, a ${zone} professionally renovated in ${style} style. Sharp focus, clean lines, cinematic natural sunlight streaming through windows, 8k UHD, highly detailed textures like polished marble and oak wood. Interior design magazine style, shot on Fujifilm X-T5, 35mm f/1.4 lens, realistic soft shadows, empty room, no people, award-winning decoration.`;
 
-        // --- Use Flux Dev LoRA model ---
+        // ---------- Prediction using ControlNet for structural integrity ----------
+        // Model: xlabs-ai/flux-dev-controlnet-canny
+        // This model uses a Canny edge map of your original room to ensure 
+        // furniture, windows, and walls stay in the EXACT same place.
         const prediction = await replicate.predictions.create({
-            model: "black-forest-labs/flux-dev-lora",
+            // We use the version hash for Xlabs Flux ControlNet Canny
+            version: "de8195822f3e79044d41d13f06e0a811a2f60251147a50e50b86a81bf9a626a5",
             input: {
-                image: resizedImage,
                 prompt: prompt,
-                num_inference_steps: 24, // within 20‑28 range for speed/quality balance
+                condition_image: resizedImage, // The original photo acts as the structural guide
+                control_type: "canny",
+                num_inference_steps: 28,
                 guidance_scale: 3.5,
-                output_format: "jpg",
-                output_quality: 95,
-                disable_safety_checker: false,
+                image_number: 1,
             },
         });
 
