@@ -60,10 +60,10 @@ export async function POST(req: NextRequest) {
                 prompt: `Masterpiece architectural photography of this room, ${style} luxury makeover. ULTRA-HIGH DEFINITION: Every material is crystal clear, hyper-realistic textures on the ${style} sofa, walls, and flooring. The window position, room dimensions, and furniture layout are strictly preserved from the original image. Cinematic lighting, sharp focus, 8k UHD, photoreal, professional interior design magazine quality. NO BLUR.`,
                 control_image: resizedImage,
                 control_type: "canny",
-                control_strength: 0.85, // Perfect balance: preserves layout but allows for high-quality texture generation
-                steps: 50,             // Maximum detail
-                guidance_scale: 8.0,   // Strongest push for high-end aesthetics
-                output_quality: 100,   // Best possible file quality
+                control_strength: 0.85,
+                steps: 40,             // High detail (safe value)
+                guidance_scale: 5.0,   // Maximum allowed value by this model
+                output_quality: 100,
                 negative_prompt: "blur, low quality, distorted, extra furniture, moving walls, modifying windows, messy, low resolution, grainy",
             },
         });
