@@ -135,7 +135,7 @@ export default function Funnel() {
                 } catch (statusErr: any) {
                     console.error("Polling error:", statusErr);
                 }
-            }, 2500); // Slightly slower polling to be safer
+            }, 1500); // Faster polling (1.5s) for quicker results
 
             // Safety timeout: stop after 10 minutes (to account for time spent on the quiz)
             setTimeout(() => {

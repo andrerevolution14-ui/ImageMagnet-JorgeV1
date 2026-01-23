@@ -22,19 +22,19 @@ export async function POST(req: NextRequest) {
 
         console.log(`Generating for ${zone} in ${style}...`);
 
-        // Professional architectural photography prompt
-        const prompt = `Professional architectural photography, interior design magazine style, ${zone} fully renovated in ${style}, high-end materials, cinematic natural lighting, 8k UHD, highly detailed, photorealistic, clean lines, luxury furniture.`;
+        // Enhanced architectural photography prompt with stronger directives
+        const prompt = `A stunning ${zone} interior completely renovated in ${style} style. Professional architectural photography with magazine-quality composition. Features: premium ${style} furniture, designer lighting fixtures, high-end finishes, perfect color coordination. Ultra-realistic, 8K resolution, sharp focus, natural daylight, award-winning interior design, photorealistic rendering, architectural digest quality.`;
 
-        // Using FLUX Fill Dev - Optimized for speed and quality
+        // Using FLUX Fill Dev - Optimized for balanced speed and quality
         // Model: black-forest-labs/flux-fill-dev
         const prediction = await replicate.predictions.create({
             version: "a053f84125613d83e65328a289e14eb6639e10725c243e8fb0c24128e5573f4c",
             input: {
                 image: image,
                 prompt: prompt,
-                num_inference_steps: 20,
-                guidance: 30,
-                megapixels: "1",
+                num_inference_steps: 28,        // Increased from 20 for better quality
+                guidance: 25,                    // Optimized from 30 for better prompt adherence
+                megapixels: "1.5",              // Increased from 1 for sharper images
                 output_format: "jpg",
                 output_quality: 95,
                 disable_safety_checker: false
