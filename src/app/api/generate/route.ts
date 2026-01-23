@@ -54,10 +54,14 @@ Magazine quality, sharp focus, natural lighting, 8k UHD.`;
         // ---------- Prediction using Image-to-Image (Img2Img) for 100% Structural Consistency ----------
         // Model: lucataco/flux-dev-lora
         // Using prompt_strength: 0.6 ensures we change colors/textures but KEEP ALL WALLS AND FURNITURE.
-        console.log("Using FLUX Dev Lora for high-fidelity Image-to-Image...");
+        console.log("Fetching version and generating with FLUX Dev Lora...");
+        const model = await replicate.models.get("lucataco", "flux-dev-lora");
+        if (!model.latest_version) {
+            throw new Error("Could not find the latest version for the FLUX model.");
+        }
+
         const prediction = await replicate.predictions.create({
-            // Version ID for lucataco/flux-dev-lora
-            version: "091495765fa5ef2725a175a57b3eab66b3c9d39c22d30410f2ede68a1fed5a23",
+            version: model.latest_version.id,
             input: {
                 prompt: prompt,
                 image: resizedImage, // Original image as the base
