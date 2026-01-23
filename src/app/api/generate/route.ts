@@ -57,13 +57,14 @@ export async function POST(req: NextRequest) {
         const prediction = await replicate.predictions.create({
             version: model.latest_version.id,
             input: {
-                prompt: `High-end architectural photography of this EXACT room with an updated ${style} aesthetic. SURFACE-ONLY RENOVATION: All structural lines, window positions, door frames, and furniture outlines MUST remain in their exact pixel-perfect positions. Only change the textures and materials: update the walls with ${style} finishes, the floor with ${style} materials, and the sofa with ${style} fabrics. NO ARCHITECTURAL CHANGES. The room dimensions, scale, and layout must be 100% identical to the original image. Cinematic lighting, 8k, photorealistic.`,
+                prompt: `Masterpiece architectural photography of this room, ${style} luxury makeover. ULTRA-HIGH DEFINITION: Every material is crystal clear, hyper-realistic textures on the ${style} sofa, walls, and flooring. The window position, room dimensions, and furniture layout are strictly preserved from the original image. Cinematic lighting, sharp focus, 8k UHD, photoreal, professional interior design magazine quality. NO BLUR.`,
                 control_image: resizedImage,
                 control_type: "canny",
-                control_strength: 1.0, // Maximum fidelity to the original lines
-                steps: 35,
-                guidance_scale: 4.5,
-                negative_prompt: "changing room dimensions, moving windows, removing windows, altering space, distorted perspective, expanding room, extra furniture, structural work, house construction, blurry, low quality",
+                control_strength: 0.85, // Perfect balance: preserves layout but allows for high-quality texture generation
+                steps: 50,             // Maximum detail
+                guidance_scale: 8.0,   // Strongest push for high-end aesthetics
+                output_quality: 100,   // Best possible file quality
+                negative_prompt: "blur, low quality, distorted, extra furniture, moving walls, modifying windows, messy, low resolution, grainy",
             },
         });
 
