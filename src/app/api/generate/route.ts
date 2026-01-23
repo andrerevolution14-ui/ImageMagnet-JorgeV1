@@ -57,13 +57,13 @@ export async function POST(req: NextRequest) {
         const prediction = await replicate.predictions.create({
             version: model.latest_version.id,
             input: {
-                prompt: `A total high-end ${style} interior design makeover of this ${zone}. MANDATORY: Every window, window frame, and window opening from the original image MUST be preserved exactly in its position. Do not cover or replace windows with walls. RENOVATE SURFACES: Update the couch with premium ${style} fabrics, the walls with ${style} finishes, and the floor with ${style} materials. The 3D layout and furniture positions must be 100% identical to the original image. Cinematic lighting, 8k, photorealistic, architectural magazine quality.`,
+                prompt: `High-end architectural photography of this EXACT room with an updated ${style} aesthetic. SURFACE-ONLY RENOVATION: All structural lines, window positions, door frames, and furniture outlines MUST remain in their exact pixel-perfect positions. Only change the textures and materials: update the walls with ${style} finishes, the floor with ${style} materials, and the sofa with ${style} fabrics. NO ARCHITECTURAL CHANGES. The room dimensions, scale, and layout must be 100% identical to the original image. Cinematic lighting, 8k, photorealistic.`,
                 control_image: resizedImage,
-                control_type: "depth",
-                control_strength: 0.9,
-                steps: 30,
-                guidance_scale: 5.0,
-                negative_prompt: "removing windows, covering windows, wall replacing window, structural changes, new windows in wrong places, changing room layout, distorted perspective, extra furniture, blurry, low quality",
+                control_type: "canny",
+                control_strength: 1.0, // Maximum fidelity to the original lines
+                steps: 35,
+                guidance_scale: 4.5,
+                negative_prompt: "changing room dimensions, moving windows, removing windows, altering space, distorted perspective, expanding room, extra furniture, structural work, house construction, blurry, low quality",
             },
         });
 
