@@ -44,11 +44,16 @@ export async function POST(req: NextRequest) {
         // --- Preprocess input image (resize to 1024px max) ---
         const resizedImage = await resizeBase64Image(image);
 
-        // ---------- Build prompt based on style/zone (Preserving structure) ----------
-        const prompt = `Professional architectural photo of a ${zone} renovated in ${style} style. 
-The furniture layout, windows, doors, and architectural structure are strictly preserved from the original. 
-The room is updated with new high-end ${style} materials, polished floors, modern fixtures, and lux finishes. 
-Realistic interior design photography, sharp focus, natural lighting, 8k UHD, highly detailed.`;
+        // ---------- Build prompt based on style/zone (STRICT RENOVATION) ----------
+        const prompt = `A professional ${style} style renovation of the existing ${zone}. 
+STRICT RULES: 
+1. The architectural layout, wall positions, and window/door locations MUST stay exactly the same.
+2. The outdoor garden/patio visible through glass doors MUST remain an outdoor area; do not turn it into an indoor room.
+3. Keep the furniture in their original positions, just update their materials and style to ${style}.
+4. NO NEW WINDOWS or doors should be added to the walls.
+Update only the textures: high-end ${style} flooring, wall finishes, and modern lighting. Magazine quality, 8k UHD.`;
+
+        const negative_prompt = "additional windows, additional doors, converting garden to indoor room, changing wall positions, changing floor plan, distorted architecture, indoor furniture in outdoor garden";
 
         // ---------- Prediction using ControlNet for structural integrity ----------
         // Model: xlabs-ai/flux-dev-controlnet
@@ -62,9 +67,10 @@ Realistic interior design photography, sharp focus, natural lighting, 8k UHD, hi
             version: model.latest_version.id,
             input: {
                 prompt: prompt,
+                negative_prompt: negative_prompt, // Prevent unwanted structural changes
                 control_image: resizedImage,
-                control_type: "depth", // Depth keeps the 'space' and 'volumes' consistent
-                steps: 28,             // Matches model's current schema
+                control_type: "canny", // Canny is more strict with edges/lines than depth
+                steps: 28,
                 guidance_scale: 3.5,
             },
         });
