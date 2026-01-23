@@ -55,13 +55,13 @@ export async function POST(req: NextRequest) {
         const prediction = await replicate.predictions.create({
             version: model.latest_version.id,
             input: {
-                prompt: `A total ${style} interior design makeover of this ${zone}. TRANSFORM EVERYTHING: Brand new ${style} materials on all surfaces. Luxurious ${style} flooring, modern ${style} wall textures, high-end designer furniture finishes. Cinematic lighting, architectural photography style, 8k, photorealistic. The original 3D layout of the room and furniture MUST be preserved exactly, but the visual style must be completely new and premium.`,
+                prompt: `A total high-end ${style} interior design makeover of this ${zone}. MANDATORY: Every window, window frame, and window opening from the original image MUST be preserved exactly in its position. Do not cover or replace windows with walls. RENOVATE SURFACES: Update the couch with premium ${style} fabrics, the walls with ${style} finishes, and the floor with ${style} materials. The 3D layout and furniture positions must be 100% identical to the original image. Cinematic lighting, 8k, photorealistic, architectural magazine quality.`,
                 control_image: resizedImage,
                 control_type: "depth",
-                control_strength: 0.9, // Strong fidelity to 3D space
+                control_strength: 0.9,
                 steps: 30,
-                guidance_scale: 5.0,     // Stronger push for the prompt's aesthetic
-                negative_prompt: "structural changes, new windows, new doors, changing room dimensions, outdoor, garden, blurry, low quality",
+                guidance_scale: 5.0,
+                negative_prompt: "removing windows, covering windows, wall replacing window, structural changes, new windows in wrong places, changing room layout, distorted perspective, extra furniture, blurry, low quality",
             },
         });
 
