@@ -28,14 +28,13 @@ export async function POST(req: NextRequest) {
         // > 0.65 = Hallucinations (Walls moving, distortion)
         // 0.55 = Perfect balance for changing materials/furniture while keeping walls fixed.
 
-        const prompt = `Hyper-realistic architectural interior renovation photography of a ${zone} in ${style} style. 
-        MANDATORY RULES: 
-        1. Keep the exact geometry of walls, windows, and doors from the original image. 
-        2. Replace floor with high-end seamless large tiles or wide-plank wood. 
-        3. Install modern minimalist skirting boards. 
-        4. Smooth high-quality wall painting and textures. 
-        5. Modern drop ceiling with recessed architectural LED lighting.
-        STYLE: Professional high-end magazine photography, cinematic lighting, 8k resolution, photorealistic, no distortion, no hallucinations.`;
+        const prompt = `Award-winning architectural interior photography of a ${zone} in ${style} style. 
+        MANDATORY ELEMENTS: 
+        - High-end luxurious materials, ray-traced reflections, and soft global illumination.
+        - Floor: Professional large-format seamless tiles or premium wide-plank oak wood with realistic grain.
+        - Walls & Ceiling: Ultra-smooth plaster, architectural minimalist skirting, and integrated warm LED lighting.
+        - Lighting: Natural sunlight streaming through windows, cinematic shadows, polished atmosphere.
+        - Quality: Photorealistic, 8k resolution, highly detailed textures, depth of field, sharp focus, magazine quality, no distortion.`;
 
         // Using Specialized Interior Design SDXL - Purpose-built for high-end renovation
         // Model: rocketdigitalai/interior-design-sdxl
@@ -44,12 +43,12 @@ export async function POST(req: NextRequest) {
             input: {
                 image: image,
                 prompt: prompt,
-                negative_prompt: "distorted, low quality, blurry, fuzzy, messy, cluttered, out of focus, watermark, text, signature, bad architecture, unrealistic, deformed walls, crooked floors, extra windows, extra doors",
+                negative_prompt: "cartoon, drawing, painting, 3d render, anime, low quality, blurry, distorted architecture, messy, cluttered, out of focus, watermark, low resolution, unrealistic lighting, flat colors",
                 depth_strength: 0.85,
-                guidance_scale: 8.0,
-                promax_strength: 0.85,
-                refiner_strength: 0.4,
-                num_inference_steps: 28
+                guidance_scale: 8.5,
+                promax_strength: 0.9,
+                refiner_strength: 0.5,
+                num_inference_steps: 35
             }
         });
 
