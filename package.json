@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "clean-deps": "npm install rimraf@latest glob@latest eslint@latest @eslint/config-array@latest @eslint/object-schema@latest lru-cache@latest --save-dev"
   },
   "dependencies": {
     "@vercel/analytics": "^1.6.1",
@@ -19,14 +20,20 @@
     "react": "^18",
     "react-dom": "^18",
     "replicate": "^0.30.0",
+    "sharp": "^0.34.5",
     "tailwind-merge": "^2.3.0"
   },
   "devDependencies": {
+    "@eslint/config-array": "^0.23.0",
+    "@eslint/object-schema": "^3.0.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "eslint": "^8",
+    "eslint": "^9.39.2",
     "eslint-config-next": "14.2.3",
+    "glob": "^13.0.0",
+    "lru-cache": "^11.2.4",
+    "rimraf": "^6.1.2",
     "typescript": "^5"
   }
 }
