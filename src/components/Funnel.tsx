@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import Step1Hook from './Step1Hook';
 import Step2Quiz from './Step2Quiz';
@@ -71,6 +71,8 @@ export default function Funnel() {
         setData((prev) => ({ ...prev, ...newData }));
     }, []);
 
+    const pollRef = useRef<NodeJS.Timeout | null>(null);
+
     const startGeneration = async () => {
         if (!data.image) return;
 
@@ -104,7 +106,9 @@ export default function Funnel() {
             console.log("Prediction started:", prediction.id);
 
             // Step 2: Poll for results
-            const pollInterval = setInterval(async () => {
+            if (pollRef.current) clearInterval(pollRef.current);
+
+            pollRef.current = setInterval(async () => {
                 try {
                     const statusRes = await fetch(`/api/predictions/${prediction.id}`);
                     if (!statusRes.ok) throw new Error("Status check failed");
@@ -113,30 +117,38 @@ export default function Funnel() {
                     console.log("Current status:", currentStatus.status);
 
                     if (currentStatus.status === "succeeded") {
-                        clearInterval(pollInterval);
+                        if (pollRef.current) clearInterval(pollRef.current);
                         const outputUrl = Array.isArray(currentStatus.output)
                             ? currentStatus.output[0]
                             : currentStatus.output;
 
-                        updateData({ outputImage: outputUrl, status: 'success' });
+                        if (outputUrl) {
+                            updateData({ outputImage: outputUrl, status: 'success' });
+                        } else {
+                            throw new Error("A IA não gerou uma imagem válida.");
+                        }
                     } else if (currentStatus.status === "failed" || currentStatus.status === "canceled") {
-                        clearInterval(pollInterval);
+                        if (pollRef.current) clearInterval(pollRef.current);
                         updateData({ status: 'error', errorMessage: "A IA encontrou um problema ao processar a imagem. Tente uma foto diferente." });
                         console.error("Task failed or canceled", currentStatus.error);
                     }
-                } catch (statusErr) {
+                } catch (statusErr: any) {
                     console.error("Polling error:", statusErr);
-                    // Don't stop polling on single network error, but we could add a counter
                 }
-            }, 2000); // Poll every 2 seconds
+            }, 2500); // Slightly slower polling to be safer
 
-            // Safety timeout: stop after 90 seconds
+            // Safety timeout: stop after 10 minutes (to account for time spent on the quiz)
             setTimeout(() => {
-                clearInterval(pollInterval);
-                if (data.status === 'generating') {
-                    updateData({ status: 'error', errorMessage: "Tempo de espera excedido. Tente novamente." });
+                if (pollRef.current) {
+                    setData(prev => {
+                        if (prev.status === 'generating' && !prev.outputImage) {
+                            if (pollRef.current) clearInterval(pollRef.current);
+                            return { ...prev, status: 'error', errorMessage: "O servidor está demorando mais que o normal. Por favor, tente novamente." };
+                        }
+                        return prev;
+                    });
                 }
-            }, 90000);
+            }, 600000);
 
         } catch (err: any) {
             console.error('Generation failed:', err);

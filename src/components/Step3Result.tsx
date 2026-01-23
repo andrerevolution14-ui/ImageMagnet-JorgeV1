@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { MessageCircle, CheckCircle2, RefreshCw, Star, Award, Clock } from 'lucide-react';
 import { FunnelData } from './Funnel';
@@ -11,6 +12,18 @@ interface Step3Props {
 
 export default function Step3Result({ data }: Step3Props) {
     const whatsappUrl = "https://wa.link/yn4hvp";
+    const [seconds, setSeconds] = useState(0);
+
+    // Track time to show helpful messages if it takes too long
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (!data.outputImage && data.status !== 'error') {
+            interval = setInterval(() => {
+                setSeconds(s => s + 1);
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [data.outputImage, data.status]);
 
     const openImage = (url: string | null | undefined) => {
         if (url) window.open(url, '_blank');
@@ -112,15 +125,53 @@ export default function Step3Result({ data }: Step3Props) {
                             width: '100%',
                             height: '100%',
                             background: 'linear-gradient(135deg, #f1f5f9, #f8fafc)',
+                            padding: '20px',
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            color: '#94a3b8'
+                            color: '#94a3b8',
+                            textAlign: 'center'
                         }}>
-                            <RefreshCw style={{ animation: 'spin 2s linear infinite', marginBottom: '10px', color: '#3b82f6' }} size={32} />
-                            <span style={{ fontWeight: 700, fontSize: '13px' }}>A finalizar visualização...</span>
-                            <span style={{ fontSize: '11px', marginTop: '2px', color: '#cbd5e1' }}>Isto demora apenas alguns segundos</span>
+                            <RefreshCw style={{ animation: 'spin 2s linear infinite', marginBottom: '16px', color: '#3b82f6' }} size={40} />
+                            <span style={{ fontWeight: 800, fontSize: '15px', color: '#1e293b', marginBottom: '4px' }}>
+                                {seconds < 15 ? "A preparar a sua nova casa..." :
+                                    seconds < 35 ? "A IA está a trabalhar no seu projeto..." :
+                                        "Isto está a demorar um pouco mais..."}
+                            </span>
+                            <span style={{ fontSize: '12px', color: '#64748b', maxWidth: '80%' }}>
+                                {seconds < 15 ? "Isto demora apenas alguns segundos" :
+                                    seconds < 35 ? "Estamos a aplicar texturas de alta definição" :
+                                        "A IA está a 'aquecer'. Não feche esta janela."}
+                            </span>
+
+                            {/* Visual Progress Indicator */}
+                            <div style={{
+                                width: '60%',
+                                height: '4px',
+                                background: '#e2e8f0',
+                                borderRadius: '2px',
+                                marginTop: '20px',
+                                overflow: 'hidden',
+                                position: 'relative'
+                            }}>
+                                <motion.div
+                                    animate={{
+                                        left: ['-100%', '100%']
+                                    }}
+                                    transition={{
+                                        duration: 2,
+                                        repeat: Infinity,
+                                        ease: "linear"
+                                    }}
+                                    style={{
+                                        position: 'absolute',
+                                        width: '50%',
+                                        height: '100%',
+                                        background: 'linear-gradient(90deg, transparent, #3b82f6, transparent)',
+                                    }}
+                                />
+                            </div>
                         </div>
                     ) : (
                         <>
