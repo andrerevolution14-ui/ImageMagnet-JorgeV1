@@ -64,10 +64,10 @@ export async function POST(req: NextRequest) {
             model: "black-forest-labs/flux-depth-pro",
             input: {
                 control_image: resizedImage,
-                prompt: `Professional ${descriptiveStyle} interior transformation of this ${zone}. Complete renovation with: clean modern ${descriptiveStyle} furniture, fresh sophisticated color palette, premium quality flooring, elegant lighting fixtures, polished finishes, tasteful decor. CLEAN AND ORGANIZED: tidy space, everything in its place, professional staging quality. Sharp photography, crystal clear details, perfect composition, 8k resolution, architectural digest quality. Dramatic improvement while maintaining clean aesthetic.`,
-                negative_prompt: "identical to original, no changes, messy, cluttered, disorganized, too many items, chaotic, dirty, old furniture, same colors, boring, futuristic, neon, sci-fi, blur, noise, artifacts, low quality",
+                prompt: `Stunning modern ${descriptiveStyle} transformation of this ${zone}. Contemporary renovation featuring: sleek ${descriptiveStyle} furniture with clean lines, eye-catching sophisticated color scheme, premium flooring, designer lighting, pristine finishes, curated stylish decor. IMMACULATE PRESENTATION: spotlessly clean, perfectly organized, minimalist elegance, professional interior design staging. Vibrant yet refined, visually striking, modern aesthetic appeal. Ultra-sharp 8k photography, flawless composition, architectural magazine quality.`,
+                negative_prompt: "identical to original, no changes, messy, cluttered, disorganized, chaotic, dirty, dusty, old furniture, dated style, boring, dull, futuristic, neon, sci-fi, blur, noise, artifacts, low quality, grainy",
                 steps: 40,
-                guidance: 2.3,  // Balanced for dramatic transformation with clean execution
+                guidance: 2.5,  // Optimized for clean, modern, eye-catching transformations
                 output_format: "jpg",
                 safety_tolerance: 2
             },
