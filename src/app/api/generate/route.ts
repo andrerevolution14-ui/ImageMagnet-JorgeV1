@@ -63,10 +63,10 @@ export async function POST(req: NextRequest) {
             model: "black-forest-labs/flux-canny-pro",
             input: {
                 control_image: resizedImage,
-                prompt: `Stunning ${descriptiveStyle} interior design transformation of this ${zone}. RICH TEXTURES: textured walls with depth, luxurious fabrics, natural wood grains, premium materials. DRAMATIC LIGHTING: layered lighting with ambient, task and accent lights, warm glowing lamps, natural window light, shadows and highlights creating depth. HIGH CONTRAST: bold color palette, striking visual interest, professional color grading. COMPLETE MAKEOVER: brand new ${descriptiveStyle} furniture pieces, statement decor items, plants, artwork, rugs, cushions, curtains. Professional architectural digest photography, ultra-sharp 8k resolution, cinematic composition, magazine cover quality. Preserve original room layout and windows but completely transform the aesthetic.`,
-                negative_prompt: "identical to original, unchanged, same furniture, same colors, same style, futuristic, neon, sci-fi, artificial lighting, space-age, plastic, glossy, blur, distorted, moving walls, modifying windows, low resolution, grainy, blurry",
+                prompt: `COMPLETE RENOVATION: Transform this ${zone} into a stunning ${descriptiveStyle} space. REPLACE EVERYTHING: all old tiles/flooring with new modern materials, all old fixtures with contemporary ones, completely new color scheme, new lighting, new furniture, new decor. Make it look like a professional renovation project - before and after should look dramatically different. ${descriptiveStyle} style with premium finishes, modern materials, professional lighting, magazine-quality interior design photography, 8k ultra sharp, photorealistic.`,
+                negative_prompt: "identical to original, no changes, same tiles, same fixtures, same colors, old materials, unchanged, futuristic, neon, sci-fi, blur, distorted, moving walls, modifying windows, low resolution",
                 steps: 35,  // Increased for better texture and detail quality
-                guidance: 2.5,  // Lower guidance = more creative freedom for dramatic transformation
+                guidance: 1.5,  // VERY LOW for maximum transformation freedom - allows complete material/color changes
                 output_format: "jpg",
                 safety_tolerance: 2
             },
