@@ -55,18 +55,19 @@ export async function POST(req: NextRequest) {
         const resizedImage = await resizeBase64Image(image);
         console.log("[API] Image resized. Length:", resizedImage.length);
 
-        // ---------- Prediction using a Professional High-Performance Model ----------
-        // Model: black-forest-labs/flux-canny-pro (Fast & High Stability)
+        // ---------- DRAMATIC TRANSFORMATION MODEL ----------
+        // Model: black-forest-labs/flux-depth-pro (Allows RADICAL changes while preserving structure)
+        // Depth control = preserves room layout but allows complete material/color transformation
         console.log(`[API] Starting prediction for style: ${style}, zone: ${zone}...`);
 
         const prediction = await replicate.predictions.create({
-            model: "black-forest-labs/flux-canny-pro",
+            model: "black-forest-labs/flux-depth-pro",
             input: {
                 control_image: resizedImage,
-                prompt: `Dramatic ${descriptiveStyle} interior transformation of this ${zone}. BOLD CHANGES: completely new ${descriptiveStyle} furniture pieces, striking new color palette, premium flooring materials, designer lighting fixtures, high-end contemporary finishes, luxury textures, statement decor elements. Professional architectural photography, ultra-high definition 8k, razor-sharp details, rich colors, perfect lighting, photorealistic rendering, interior design magazine cover quality. Maintain room layout and windows but transform everything else dramatically.`,
-                negative_prompt: "identical to original, no changes, same furniture, same colors, futuristic, neon lights, sci-fi, space-age, artificial purple lighting, plastic materials, glossy surfaces, blur, distorted, moving walls, modifying windows, low resolution",
-                steps: 40,  // Maximum quality for sharp, detailed, high-resolution output
-                guidance: 2.2,  // Lower for dramatic transformation while avoiding futuristic extremes
+                prompt: `STUNNING ${descriptiveStyle} TRANSFORMATION: Completely redesign this ${zone} with brand new everything. NEW FURNITURE: all ${descriptiveStyle} pieces, NEW COLORS: bold striking palette, NEW MATERIALS: premium flooring and wall finishes, NEW FIXTURES: modern lighting and hardware, NEW DECOR: plants, artwork, textiles. Make this look like an expensive professional renovation - dramatically different from the original. Ultra-realistic, 8k photography, perfect lighting, magazine cover quality.`,
+                negative_prompt: "identical to original, no changes, same old furniture, same colors, same materials, boring, plain, futuristic, neon, sci-fi, blur, low quality",
+                steps: 40,
+                guidance: 2.0,  // Low guidance for MAXIMUM transformation freedom
                 output_format: "jpg",
                 safety_tolerance: 2
             },
