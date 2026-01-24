@@ -164,18 +164,17 @@ export default function Funnel() {
             // Start polling
             poll();
 
-            // Safety timeout: stop after 5 minutes (reduced from 10 to be more responsive to issues)
+            // Safety timeout: stop after 8 minutes (increased from 5 to accommodate queuing/cold starts)
             setTimeout(() => {
-                if (pollRef.current) {
-                    setData(prev => {
-                        if (prev.status === 'generating' && !prev.outputImage) {
-                            clearTimeout(pollRef.current as NodeJS.Timeout);
-                            return { ...prev, status: 'error', errorMessage: "O servidor está demorando mais que o normal. Por favor, tente novamente." };
-                        }
-                        return prev;
-                    });
-                }
-            }, 300000);
+                setData(prev => {
+                    // Check if we are still generating and don't have an image after 8 mins
+                    if (prev.status === 'generating' && !prev.outputImage) {
+                        if (pollRef.current) clearTimeout(pollRef.current as NodeJS.Timeout);
+                        return { ...prev, status: 'error', errorMessage: "O servidor está a demorar mais do que o esperado devido a alta procura. Por favor, tente novamente dentro de momentos." };
+                    }
+                    return prev;
+                });
+            }, 480000);
 
         } catch (err: any) {
             console.error('Generation failed:', err);

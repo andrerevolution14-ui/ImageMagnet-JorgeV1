@@ -55,21 +55,20 @@ export async function POST(req: NextRequest) {
         const resizedImage = await resizeBase64Image(image);
         console.log("[API] Image resized. Length:", resizedImage.length);
 
-        // ---------- Prediction using a more stable and specialized Model ----------
-        // Model: adirik/interior-design
-        // This model is faster and more reliable than Flux for interior design tasks
-        const versionId = "76604baddc85b1b4616e1c6475eca080da339c8875bd4996705440484a6eac38";
-
+        // ---------- Prediction using a Professional High-Performance Model ----------
+        // Model: black-forest-labs/flux-canny-pro (Fast & High Stability)
         console.log(`[API] Starting prediction for style: ${style}, zone: ${zone}...`);
+
         const prediction = await replicate.predictions.create({
-            version: versionId,
+            model: "black-forest-labs/flux-canny-pro",
             input: {
-                image: resizedImage,
-                prompt: `Professional photography of a ${zone}, ${descriptiveStyle} style interior design, highly detailed, realistic materials, natural lighting, sharp focus, 8k resolution, cinematic composition.`,
-                negative_prompt: "futuristic, neon, sci-fi, artificial lighting, messy, low quality, distorted, extra furniture, moving walls, modifying windows, low resolution, grainy, blurry",
-                num_inference_steps: 50,
-                guidance_scale: 12,
-                prompt_strength: 0.8,
+                control_image: resizedImage,
+                prompt: `Professional architectural photography of a ${zone}, ${descriptiveStyle} style interior renovation. Realistic materials, natural lighting, sharp focus, 8k resolution, photorealistic. Grounded and cozy home environment, no futuristic or neon elements.`,
+                negative_prompt: "futuristic, neon, sci-fi, artificial lighting, space-age, plastic, glossy, blur, distorted, extra furniture, moving walls, modifying windows, low resolution, grainy, blurry",
+                steps: 28,
+                guidance: 3.5,
+                output_format: "jpg",
+                safety_tolerance: 2
             },
         });
 
