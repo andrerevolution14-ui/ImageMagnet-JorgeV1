@@ -64,10 +64,10 @@ export async function POST(req: NextRequest) {
             model: "black-forest-labs/flux-depth-pro",
             input: {
                 control_image: resizedImage,
-                prompt: `STUNNING ${descriptiveStyle} TRANSFORMATION: Completely redesign this ${zone} with brand new everything. NEW FURNITURE: all ${descriptiveStyle} pieces, NEW COLORS: bold striking palette, NEW MATERIALS: premium flooring and wall finishes, NEW FIXTURES: modern lighting and hardware, NEW DECOR: plants, artwork, textiles. Make this look like an expensive professional renovation - dramatically different from the original. Ultra-realistic, 8k photography, perfect lighting, magazine cover quality.`,
-                negative_prompt: "identical to original, no changes, same old furniture, same colors, same materials, boring, plain, futuristic, neon, sci-fi, blur, low quality",
+                prompt: `Professional ${descriptiveStyle} interior transformation of this ${zone}. Complete renovation with: clean modern ${descriptiveStyle} furniture, fresh sophisticated color palette, premium quality flooring, elegant lighting fixtures, polished finishes, tasteful decor. CLEAN AND ORGANIZED: tidy space, everything in its place, professional staging quality. Sharp photography, crystal clear details, perfect composition, 8k resolution, architectural digest quality. Dramatic improvement while maintaining clean aesthetic.`,
+                negative_prompt: "identical to original, no changes, messy, cluttered, disorganized, too many items, chaotic, dirty, old furniture, same colors, boring, futuristic, neon, sci-fi, blur, noise, artifacts, low quality",
                 steps: 40,
-                guidance: 2.0,  // Low guidance for MAXIMUM transformation freedom
+                guidance: 2.3,  // Balanced for dramatic transformation with clean execution
                 output_format: "jpg",
                 safety_tolerance: 2
             },
