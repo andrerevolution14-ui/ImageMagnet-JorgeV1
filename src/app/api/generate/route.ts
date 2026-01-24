@@ -63,10 +63,10 @@ export async function POST(req: NextRequest) {
             model: "black-forest-labs/flux-canny-pro",
             input: {
                 control_image: resizedImage,
-                prompt: `Professional architectural photography of a ${zone}, ${descriptiveStyle} style interior renovation. Realistic materials, natural lighting, sharp focus, 8k resolution, photorealistic. Grounded and cozy home environment, no futuristic or neon elements.`,
-                negative_prompt: "futuristic, neon, sci-fi, artificial lighting, space-age, plastic, glossy, blur, distorted, extra furniture, moving walls, modifying windows, low resolution, grainy, blurry",
+                prompt: `Complete ${descriptiveStyle} renovation of this ${zone}. Transform with: new ${descriptiveStyle} furniture, updated wall treatments and paint colors, modern flooring, improved lighting fixtures, decorative elements. Professional interior design photography, 8k resolution, photorealistic, magazine quality. Dramatic before-and-after transformation while preserving room structure and windows.`,
+                negative_prompt: "identical to original, unchanged, same furniture, same colors, same style, futuristic, neon, sci-fi, artificial lighting, space-age, plastic, glossy, blur, distorted, moving walls, modifying windows, low resolution, grainy, blurry",
                 steps: 28,
-                guidance: 3.5,
+                guidance: 2.5,  // Lower guidance = more creative freedom for dramatic transformation
                 output_format: "jpg",
                 safety_tolerance: 2
             },
