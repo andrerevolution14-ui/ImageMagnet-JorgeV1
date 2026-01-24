@@ -51,37 +51,29 @@ export async function POST(req: NextRequest) {
         };
 
         // --- Preprocess input image (resize to 1024px max) ---
+        console.log("[API] Resizing image...");
         const resizedImage = await resizeBase64Image(image);
+        console.log("[API] Image resized. Length:", resizedImage.length);
 
-        // ---------- Prediction using ControlNet for 100% Structural Consistency + Radical Renovation ----------
-        // Model: xlabs-ai/flux-dev-controlnet
-        console.log(`[API] Fetching model version for xlabs-ai/flux-dev-controlnet...`);
-        const model = await replicate.models.get("xlabs-ai", "flux-dev-controlnet");
-        if (!model.latest_version) {
-            console.error("[API] Could not find latest version for xlabs-ai/flux-dev-controlnet");
-            throw new Error("Could not find the latest version for the ControlNet model.");
-        }
+        // ---------- Prediction using a more stable and specialized Model ----------
+        // Model: adirik/interior-design
+        // This model is faster and more reliable than Flux for interior design tasks
+        const versionId = "76604baddc85b1b4616e1c6475eca080da339c8875bd4996705440484a6eac38";
 
         console.log(`[API] Starting prediction for style: ${style}, zone: ${zone}...`);
         const prediction = await replicate.predictions.create({
-            version: model.latest_version.id,
+            version: versionId,
             input: {
-                prompt: `Realistic professional architectural photography of this ${zone}, ${descriptiveStyle} renovation. Natural textures, real-world materials, authentic furniture. The window position, room dimensions, and structural layout are strictly preserved from the original image. Soft natural lighting, sharp focus, grounded professional interior design. Cozy and lived-in feel, realistic home environment, no futuristic elements.`,
-                control_image: resizedImage,
-                control_type: "canny",
-                control_strength: 0.85,
-                steps: 40,
-                guidance_scale: 4.0,   // Slightly lower guidance for more natural, less "AI-generated" look
-                output_quality: 100,
-                negative_prompt: "futuristic, neon, sci-fi, artificial purple light, space-age, plastic, glossy, blur, distorted, extra furniture, moving walls, modifying windows, low resolution",
+                image: resizedImage,
+                prompt: `Professional photography of a ${zone}, ${descriptiveStyle} style interior design, highly detailed, realistic materials, natural lighting, sharp focus, 8k resolution, cinematic composition.`,
+                negative_prompt: "futuristic, neon, sci-fi, artificial lighting, messy, low quality, distorted, extra furniture, moving walls, modifying windows, low resolution, grainy, blurry",
+                num_inference_steps: 50,
+                guidance_scale: 12,
+                prompt_strength: 0.8,
             },
         });
 
         console.log('[API] Prediction created successfully:', prediction.id);
-
-        if (prediction.error) {
-            return NextResponse.json({ error: prediction.error }, { status: 500 });
-        }
 
         return NextResponse.json(prediction);
     } catch (error: any) {

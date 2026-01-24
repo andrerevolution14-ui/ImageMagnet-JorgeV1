@@ -105,43 +105,60 @@ export default function Funnel() {
 
             console.log("Prediction started:", prediction.id);
 
-            // Step 2: Poll for results using a robust recursive timeout (replaces setInterval)
+            // Step 2: Poll for results using a robust recursive timeout
+            let pollCount = 0;
+            const maxPolls = 150; // ~5 minutes at 2s interval
+
             const poll = async () => {
-                if (!prediction.id) return;
+                if (!prediction.id || pollCount >= maxPolls) {
+                    if (pollCount >= maxPolls) {
+                        updateData({ status: 'error', errorMessage: "O tempo limite foi atingido. Por favor, tente novamente." });
+                    }
+                    return;
+                }
+
+                pollCount++;
+                console.log(`Polling count: ${pollCount}, ID: ${prediction.id}`);
 
                 try {
                     const statusRes = await fetch(`/api/predictions/${prediction.id}`);
+
                     if (!statusRes.ok) {
-                        console.error("Status check failed on server");
-                        // Don't throw here, try again in next tick
+                        const errorMsg = `Erro ao verificar estado (${statusRes.status})`;
+                        console.error(errorMsg);
+                        // Optional: only fail after multiple consecutive fetch errors
+                        if (pollCount > 10) throw new Error("Falha na comunicação com o servidor após várias tentativas.");
                     } else {
                         const currentStatus = await statusRes.json();
-                        console.log("Current status:", currentStatus.status);
+                        console.log("Current status from API:", currentStatus.status);
 
                         if (currentStatus.status === "succeeded") {
                             const outputUrl = Array.isArray(currentStatus.output)
-                                ? currentStatus.output[0]
+                                ? currentStatus.output[currentStatus.output.length - 1] // Get the last one, sometimes there's a progression
                                 : currentStatus.output;
 
                             if (outputUrl) {
-                                console.log("Success! Image URL received.");
+                                console.log("Success! Image URL received:", outputUrl);
                                 updateData({ outputImage: outputUrl, status: 'success' });
                                 return; // Stop polling
                             } else {
-                                throw new Error("A IA não gerou uma imagem válida.");
+                                throw new Error("A IA terminou mas não gerou uma imagem válida.");
                             }
                         } else if (currentStatus.status === "failed" || currentStatus.status === "canceled") {
-                            updateData({ status: 'error', errorMessage: "A IA encontrou um problema ao processar a imagem. Tente uma foto diferente." });
-                            console.error("Task failed or canceled", currentStatus.error);
+                            const errorDetail = currentStatus.error || "Erro desconhecido na geração.";
+                            updateData({ status: 'error', errorMessage: `A IA encontrou um problema: ${errorDetail}` });
+                            console.error("Task failed or canceled:", errorDetail);
                             return; // Stop polling
                         }
                     }
                 } catch (statusErr: any) {
                     console.error("Polling error caught:", statusErr);
+                    updateData({ status: 'error', errorMessage: statusErr.message || "Erro ao processar imagem." });
+                    return; // Stop polling on hard error
                 }
 
                 // Schedule next poll if still generating
-                pollRef.current = setTimeout(poll, 2000);
+                pollRef.current = setTimeout(poll, 2500); // Slightly more relaxed interval
             };
 
             // Start polling
