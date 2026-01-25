@@ -57,15 +57,15 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
     };
 
     const options1 = [
-        { id: 'a', text: 'O mais rápido possível', emoji: '⚡', color: '#f97316' },
-        { id: 'b', text: 'Daqui a 1-3 meses', emoji: '📅', color: '#3b82f6' },
-        { id: 'c', text: 'Apenas a planear', emoji: '💭', color: '#a855f7' }
+        { id: 'a', text: 'Vivo na casa e quero renovar', emoji: '🏡', color: '#3b82f6' },
+        { id: 'b', text: 'Quero valorizar para vender/arrendar', emoji: '📈', color: '#10b981' },
+        { id: 'c', text: 'Estou a comprar e quero ver potencial', emoji: '🔑', color: '#a855f7' }
     ];
 
     const options2 = [
-        { id: 'a', text: 'Valorizar o imóvel (Venda)', emoji: '💎', color: '#10b981' },
-        { id: 'b', text: 'Conforto da família', emoji: '🏡', color: '#f59e0b' },
-        { id: 'c', text: 'Modernização estética', emoji: '✨', color: '#8b5cf6' }
+        { id: 'a', text: 'O mais breve possível', emoji: '⚡', color: '#f97316' },
+        { id: 'b', text: 'Nos próximos 3-6 meses', emoji: '📅', color: '#3b82f6' },
+        { id: 'c', text: 'Apenas a planear para o futuro', emoji: '💭', color: '#8b5cf6' }
     ];
 
     return (
@@ -94,9 +94,9 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                     lineHeight: 1.2,
                     padding: '0 16px'
                 }}>
-                    {currentSubStep === 1 && "Quando pensas tornar isto realidade?"}
-                    {currentSubStep === 2 && "Qual o seu principal objetivo?"}
-                    {currentSubStep === 3 && "Onde enviamos o seu projeto em HD?"}
+                    {currentSubStep === 1 && "Qual o seu perfil de proprietário?"}
+                    {currentSubStep === 2 && "Para quando planeia a intervenção?"}
+                    {currentSubStep === 3 && "Onde podemos enviar o projeto completo?"}
                 </h2>
             </div>
 
@@ -105,7 +105,7 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                     <button
                         key={opt.text}
                         type="button"
-                        onClick={() => handleOptionClick({ remodelDate: opt.text, question_1: opt.id })}
+                        onClick={() => handleOptionClick({ objective: opt.text, question_1: opt.id })}
                         style={{
                             width: '100%',
                             padding: '20px 24px',
@@ -151,7 +151,7 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                     <button
                         key={opt.text}
                         type="button"
-                        onClick={() => handleOptionClick({ objective: opt.text, question_2: opt.id })}
+                        onClick={() => handleOptionClick({ remodelDate: opt.text, question_2: opt.id })}
                         style={{
                             width: '100%',
                             padding: '20px 24px',
@@ -203,15 +203,19 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                                     top: '50%',
                                     transform: 'translateY(-50%)',
                                     fontSize: '24px'
-                                }}>📧</span>
+                                }}>📱</span>
                                 <input
-                                    type="email"
-                                    placeholder="O seu Email"
-                                    value={data.email}
+                                    type="tel"
+                                    placeholder="O seu WhatsApp"
+                                    value={data.whatsapp}
                                     onChange={(e) => {
-                                        const email = e.target.value;
-                                        updateData({ email });
-                                        validateEmail(email);
+                                        const whatsapp = e.target.value;
+                                        updateData({ whatsapp });
+                                        if (whatsapp && whatsapp.length < 9) {
+                                            setEmailError("Número inválido");
+                                        } else {
+                                            setEmailError(null);
+                                        }
                                     }}
                                     style={{
                                         width: '100%',
@@ -250,7 +254,7 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                                 </div>
                             )}
 
-                            {/* Privacy explanation */}
+                            {/* Privacy explanation - THE EXCUSE */}
                             <div style={{
                                 display: 'flex',
                                 alignItems: 'flex-start',
@@ -262,15 +266,15 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                             }}>
                                 <Shield style={{ color: '#2563eb', flexShrink: 0, marginTop: '2px' }} size={20} />
                                 <div style={{ fontSize: '14px', color: '#475569', lineHeight: 1.5 }}>
-                                    <span style={{ fontWeight: 600, color: '#0f172a' }}>O seu email é apenas para enviar o projeto.</span> Utilizamos para evitar duplicados e garantir que recebe o resultado.
-                                    <span style={{ display: 'block', marginTop: '4px', fontSize: '12px', color: '#64748b' }}>🔒 Nunca enviaremos emails de marketing.</span>
+                                    <span style={{ fontWeight: 600, color: '#0f172a' }}>O seu WhatsApp será usado apenas para enviar o projeto</span> e garantir que não existem gerações duplicadas pelo mesmo utilizador.
+                                    <span style={{ display: 'block', marginTop: '4px', fontSize: '12px', color: '#64748b' }}>🔒 Os seus dados estão seguros. Não fazemos chamadas indesejadas nem spam.</span>
                                 </div>
                             </div>
                         </div>
 
                         <button
                             type="button"
-                            disabled={!!emailError || !data.email}
+                            disabled={!!emailError || !data.whatsapp}
                             onClick={handleNextSubStep}
                             style={{
                                 width: '100%',
@@ -281,13 +285,13 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                                 fontSize: '20px',
                                 color: 'white',
                                 background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #db2777 100%)',
-                                boxShadow: (emailError || !data.email) ? 'none' : '0 10px 30px rgba(37, 99, 235, 0.4)',
-                                cursor: (emailError || !data.email) ? 'not-allowed' : 'pointer',
-                                opacity: (emailError || !data.email) ? 0.5 : 1,
+                                boxShadow: (emailError || !data.whatsapp) ? 'none' : '0 10px 30px rgba(37, 99, 235, 0.4)',
+                                cursor: (emailError || !data.whatsapp) ? 'not-allowed' : 'pointer',
+                                opacity: (emailError || !data.whatsapp) ? 0.5 : 1,
                                 transition: 'all 0.3s ease'
                             }}
                         >
-                            {emailError ? 'Email Inválido' : (data.email ? '✨ Ver Meu Projeto' : 'Introduza o seu e-mail')}
+                            {emailError ? 'Número Inválido' : (data.whatsapp ? '✨ Ver Meu Projeto' : 'Introduza o WhatsApp')}
                         </button>
                     </div>
                 )}

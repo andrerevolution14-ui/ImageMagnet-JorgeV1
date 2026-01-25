@@ -63,14 +63,17 @@ export default function Step3Result({ data }: Step3Props) {
                 fontSize: '28px',
                 fontWeight: 800,
                 textAlign: 'center',
-                marginBottom: '24px',
+                marginBottom: '8px',
                 background: 'linear-gradient(135deg, #0f172a, #1e40af, #0f172a)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text'
             }}>
-                Sua Nova Casa ✨
+                O potencial da sua casa ✨
             </h1>
+            <p style={{ textAlign: 'center', color: '#64748b', fontSize: '14px', marginBottom: '24px' }}>
+                Veja como o Jorge pode transformar o seu espaço em Aveiro.
+            </p>
 
             {/* Images Section */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
@@ -135,14 +138,14 @@ export default function Step3Result({ data }: Step3Props) {
                         }}>
                             <RefreshCw style={{ animation: 'spin 2s linear infinite', marginBottom: '16px', color: '#3b82f6' }} size={40} />
                             <span style={{ fontWeight: 800, fontSize: '15px', color: '#1e293b', marginBottom: '4px' }}>
-                                {seconds < 15 ? "A preparar a sua nova casa..." :
-                                    seconds < 35 ? "A IA está a trabalhar no seu projeto..." :
-                                        "Isto está a demorar um pouco mais..."}
+                                {seconds < 15 ? "A analisar o potencial do seu espaço..." :
+                                    seconds < 35 ? "A IA está a aplicar novos materiais e luz..." :
+                                        "Quase pronto! A finalizar os detalhes..."}
                             </span>
                             <span style={{ fontSize: '12px', color: '#64748b', maxWidth: '80%' }}>
                                 {seconds < 15 ? "Isto demora apenas alguns segundos" :
-                                    seconds < 35 ? "Estamos a ajustar os materiais e iluminação..." :
-                                        "A IA está a 'aquecer'. Não feche esta janela."}
+                                    seconds < 35 ? "Estamos a definir a melhor visão para a sua casa..." :
+                                        "A IA está a dar o toque final de realismo."}
                             </span>
 
                             {/* Visual Progress Indicator */}
@@ -247,35 +250,52 @@ export default function Step3Result({ data }: Step3Props) {
                     style={{
                         display: 'flex',
                         width: '100%',
-                        padding: '14px 20px',
-                        background: 'linear-gradient(135deg, #25D366, #128C7E)',
+                        padding: '16px 20px',
+                        background: 'linear-gradient(135deg, #1e293b, #0f172a)',
                         color: 'white',
-                        borderRadius: '12px',
-                        boxShadow: '0 8px 25px rgba(37, 211, 102, 0.3)',
+                        borderRadius: '16px',
+                        boxShadow: '0 8px 30px rgba(15, 23, 42, 0.2)',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        gap: '10px',
+                        gap: '12px',
                         textDecoration: 'none',
                         marginBottom: '10px',
                         transition: 'all 0.3s ease',
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
-                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'scale(1.02)';
+                        e.currentTarget.style.boxShadow = '0 12px 40px rgba(37, 99, 235, 0.3)';
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'scale(1)';
+                        e.currentTarget.style.boxShadow = '0 8px 30px rgba(15, 23, 42, 0.2)';
+                    }}
                 >
-                    <MessageCircle size={22} />
-                    <div style={{ textAlign: 'left' }}>
-                        <div style={{ fontSize: '16px', fontWeight: 800 }}>Enviar mensagem</div>
-                        <div style={{ fontSize: '11px', opacity: 0.9 }}>Avaliação grátis sem compromisso</div>
+                    <div style={{
+                        width: '40px',
+                        height: '40px',
+                        background: '#25D366',
+                        borderRadius: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0
+                    }}>
+                        <MessageCircle size={24} fill="white" />
+                    </div>
+                    <div style={{ textAlign: 'left', flex: 1 }}>
+                        <div style={{ fontSize: '15px', fontWeight: 800, lineHeight: 1.2 }}>Validar esta ideia com o Jorge</div>
+                        <div style={{ fontSize: '11px', opacity: 0.8 }}>Conversa grátis • Sem compromisso</div>
                     </div>
                 </a>
                 <p style={{
                     fontSize: '13px',
                     color: '#64748b',
                     maxWidth: '90%',
-                    margin: '0 auto',
+                    margin: '12px auto 0',
                     lineHeight: 1.4
                 }}>
-                    ✨ <span style={{ fontWeight: 600, color: '#475569' }}>Nota:</span> O Jorge ajuda a entender o melhor resultado possível e o seu orçamento.
+                    🔒 <span style={{ fontWeight: 600, color: '#475569' }}>Clareza total:</span> O Jorge ajuda-o a perceber custos e prazos para tornar esta visão real, sem pressões.
                 </p>
             </div>
 

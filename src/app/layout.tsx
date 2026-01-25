@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-    title: "Casa de Sonho",
-    description: "Veja o potencial oculto da sua casa em 30 segundos. Ferramenta de visualização inteligente para proprietários.",
+    title: "Jorge • O Potencial da sua Casa em Aveiro",
+    description: "Antes de mexer numa parede, veja como a sua casa em Aveiro pode ficar. Visualização IA gratuita e sem compromisso.",
 };
 
 import { Analytics } from "@vercel/analytics/next"

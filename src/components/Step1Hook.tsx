@@ -74,7 +74,7 @@ export default function Step1Hook({ data, updateData, onNext }: Step1Props) {
                         border: '1px solid #e2e8f0'
                     }}
                 >
-                    ⚡ Visualização IA Gratuita
+                    📍Aveiro • Visualização IA Gratuita
                 </motion.div>
                 <motion.h1
                     className="hero-title mb-4"
@@ -82,10 +82,10 @@ export default function Step1Hook({ data, updateData, onNext }: Step1Props) {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.2 }}
                 >
-                    Veja o potencial oculto da sua casa em 30 segundos
+                    A sua casa em Aveiro tem mais potencial do que imagina
                 </motion.h1>
                 <p className="text-base text-secondary px-4" style={{ maxWidth: '600px', margin: '0 auto' }}>
-                    Tecnologia IA profissional ao seu alcance. <span style={{ fontWeight: 600, color: '#1e293b' }}>100% gratuito</span>, sem compromisso.
+                    Antes de mexer numa parede, veja como a sua casa pode ficar. <span style={{ fontWeight: 600, color: '#1e293b' }}>100% gratuito</span>, sem compromisso.
                 </p>
             </div>
 
@@ -148,8 +148,8 @@ export default function Step1Hook({ data, updateData, onNext }: Step1Props) {
                             }}>
                                 <Upload size={36} />
                             </div>
-                            <h3 className="text-xl font-bold mb-2">Carregue a foto da sua {data.zone}</h3>
-                            <p className="text-secondary text-sm">Arraste a imagem ou toque para selecionar</p>
+                            <h3 className="text-xl font-bold mb-2">Carregue a foto do seu espaço</h3>
+                            <p className="text-secondary text-sm">Mostre ao Jorge o que quer transformar</p>
                         </>
                     )}
                 </div>
