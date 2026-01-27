@@ -105,9 +105,9 @@ export default function Funnel() {
 
             console.log("Prediction started:", prediction.id);
 
-            // Step 2: Poll for results using a robust recursive timeout
+            // Step 2: Poll for results using adaptive polling (fast at first, then slower)
             let pollCount = 0;
-            const maxPolls = 250; // Increased to allow more time for slow model starts
+            const maxPolls = 250;
 
             const poll = async () => {
                 if (!prediction.id || pollCount >= maxPolls) {
@@ -121,7 +121,9 @@ export default function Funnel() {
                 console.log(`Polling count: ${pollCount}, ID: ${prediction.id}`);
 
                 try {
-                    const statusRes = await fetch(`/api/predictions/${prediction.id}`);
+                    const statusRes = await fetch(`/api/predictions/${prediction.id}`, {
+                        cache: 'no-store' // Prevent caching to always get fresh status
+                    });
 
                     if (!statusRes.ok) {
                         const errorMsg = `Erro ao verificar estado (${statusRes.status})`;
@@ -141,11 +143,11 @@ export default function Funnel() {
 
                         if (currentStatus.status === "succeeded") {
                             const outputUrl = Array.isArray(currentStatus.output)
-                                ? currentStatus.output[currentStatus.output.length - 1] // Get the last one, sometimes there's a progression
+                                ? currentStatus.output[currentStatus.output.length - 1]
                                 : currentStatus.output;
 
                             if (outputUrl) {
-                                console.log("Success! Image URL received:", outputUrl);
+                                console.log("✅ Success! Image URL received:", outputUrl);
                                 updateData({ outputImage: outputUrl, status: 'success' });
                                 return; // Stop polling
                             } else {
@@ -164,8 +166,19 @@ export default function Funnel() {
                     return; // Stop polling on hard error
                 }
 
-                // Schedule next poll if still generating
-                pollRef.current = setTimeout(poll, 2500); // Slightly more relaxed interval
+                // Adaptive polling interval: fast at first, then slower
+                // First 10 polls: 1 second (0-10 seconds)
+                // Next 20 polls: 2 seconds (10-50 seconds)
+                // After that: 3 seconds
+                let nextInterval = 1000; // Default: 1 second
+                if (pollCount > 30) {
+                    nextInterval = 3000; // 3 seconds after 30 polls
+                } else if (pollCount > 10) {
+                    nextInterval = 2000; // 2 seconds after 10 polls
+                }
+
+                console.log(`⏱️ Next poll in ${nextInterval}ms`);
+                pollRef.current = setTimeout(poll, nextInterval);
             };
 
             // Start polling
