@@ -17,9 +17,18 @@ export default function Step3Result({ data }: Step3Props) {
     const [seconds, setSeconds] = useState(0);
 
     const handleWhatsAppClick = () => {
+        // Track as High Lead with a high value for optimization
         event('Lead', {
             content_name: 'Mensagem ao Jorge',
-            content_category: 'Conversion'
+            content_category: 'Conversion',
+            value: 50.00,
+            currency: 'EUR'
+        });
+        // Also fire a custom event as requested
+        event('HighLead', {
+            content_name: 'Mensagem ao Jorge',
+            value: 50.00,
+            currency: 'EUR'
         });
     };
 

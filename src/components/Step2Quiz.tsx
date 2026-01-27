@@ -48,10 +48,12 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
         if (currentSubStep < 3) {
             setCurrentSubStep(currentSubStep + 1);
         } else {
-            // Track completion of the form
+            // Track completion of the form with a base value
             event('Lead', {
                 content_name: 'Formulário Completo',
-                content_category: 'Conversion'
+                content_category: 'Conversion',
+                value: 5.00,
+                currency: 'EUR'
             });
             onNext();
         }
@@ -107,145 +109,159 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                {currentSubStep === 1 && options1.map((opt) => (
-                    <button
-                        key={opt.text}
-                        type="button"
-                        onClick={() => handleOptionClick({ objective: opt.text, question_1: opt.id })}
-                        style={{
-                            width: '100%',
-                            padding: '20px 24px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '16px',
-                            background: `linear-gradient(135deg, ${opt.color}15, ${opt.color}08)`,
-                            border: `2px solid ${opt.color}30`,
-                            borderRadius: '16px',
-                            cursor: 'pointer',
-                            transition: 'all 0.3s ease',
-                            textAlign: 'left'
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = 'scale(1.02)';
-                            e.currentTarget.style.borderColor = opt.color;
-                            e.currentTarget.style.boxShadow = `0 8px 25px ${opt.color}30`;
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = 'scale(1)';
-                            e.currentTarget.style.borderColor = `${opt.color}30`;
-                            e.currentTarget.style.boxShadow = 'none';
-                        }}
-                    >
-                        <span style={{ fontSize: '32px' }}>{opt.emoji}</span>
-                        <span style={{ flex: 1, fontSize: '18px', fontWeight: 600, color: '#1e293b' }}>{opt.text}</span>
-                        <div style={{
-                            width: '40px',
-                            height: '40px',
-                            borderRadius: '50%',
-                            background: opt.color,
-                            color: 'white',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontWeight: 700,
-                            fontSize: '18px'
-                        }}>→</div>
-                    </button>
-                ))}
+                <>
+                    {currentSubStep === 1 && options1.map((opt) => (
+                        <button
+                            key={opt.text}
+                            type="button"
+                            onClick={() => handleOptionClick({ objective: opt.text, question_1: opt.id })}
+                            style={{
+                                width: '100%',
+                                padding: '20px 24px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '16px',
+                                background: `linear-gradient(135deg, ${opt.color}15, ${opt.color}08)`,
+                                border: `2px solid ${opt.color}30`,
+                                borderRadius: '16px',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease',
+                                textAlign: 'left'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'scale(1.02)';
+                                e.currentTarget.style.borderColor = opt.color;
+                                e.currentTarget.style.boxShadow = `0 8px 25px ${opt.color}30`;
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'scale(1)';
+                                e.currentTarget.style.borderColor = `${opt.color}30`;
+                                e.currentTarget.style.boxShadow = 'none';
+                            }}
+                        >
+                            <span style={{ fontSize: '32px' }}>{opt.emoji}</span>
+                            <span style={{ flex: 1, fontSize: '18px', fontWeight: 600, color: '#1e293b' }}>{opt.text}</span>
+                            <div style={{
+                                width: '40px',
+                                height: '40px',
+                                borderRadius: '50%',
+                                background: opt.color,
+                                color: 'white',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontWeight: 700,
+                                fontSize: '18px'
+                            }}>→</div>
+                        </button>
+                    ))}
 
-                {currentSubStep === 2 && options2.map((opt) => (
-                    <button
-                        key={opt.text}
-                        type="button"
-                        onClick={() => handleOptionClick({ remodelDate: opt.text, question_2: opt.id })}
-                        style={{
-                            width: '100%',
-                            padding: '20px 24px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '16px',
-                            background: `linear-gradient(135deg, ${opt.color}15, ${opt.color}08)`,
-                            border: `2px solid ${opt.color}30`,
-                            borderRadius: '16px',
-                            cursor: 'pointer',
-                            transition: 'all 0.3s ease',
-                            textAlign: 'left'
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = 'scale(1.02)';
-                            e.currentTarget.style.borderColor = opt.color;
-                            e.currentTarget.style.boxShadow = `0 8px 25px ${opt.color}30`;
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = 'scale(1)';
-                            e.currentTarget.style.borderColor = `${opt.color}30`;
-                            e.currentTarget.style.boxShadow = 'none';
-                        }}
-                    >
-                        <span style={{ fontSize: '32px' }}>{opt.emoji}</span>
-                        <span style={{ flex: 1, fontSize: '18px', fontWeight: 600, color: '#1e293b' }}>{opt.text}</span>
-                        <div style={{
-                            width: '40px',
-                            height: '40px',
-                            borderRadius: '50%',
-                            background: opt.color,
-                            color: 'white',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontWeight: 700,
-                            fontSize: '18px'
-                        }}>→</div>
-                    </button>
-                ))}
+                    {currentSubStep === 2 && options2.map((opt) => (
+                        <button
+                            key={opt.text}
+                            type="button"
+                            onClick={() => handleOptionClick({ remodelDate: opt.text, question_2: opt.id })}
+                            style={{
+                                width: '100%',
+                                padding: '20px 24px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '16px',
+                                background: `linear-gradient(135deg, ${opt.color}15, ${opt.color}08)`,
+                                border: `2px solid ${opt.color}30`,
+                                borderRadius: '16px',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease',
+                                textAlign: 'left'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'scale(1.02)';
+                                e.currentTarget.style.borderColor = opt.color;
+                                e.currentTarget.style.boxShadow = `0 8px 25px ${opt.color}30`;
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'scale(1)';
+                                e.currentTarget.style.borderColor = `${opt.color}30`;
+                                e.currentTarget.style.boxShadow = 'none';
+                            }}
+                        >
+                            <span style={{ fontSize: '32px' }}>{opt.emoji}</span>
+                            <span style={{ flex: 1, fontSize: '18px', fontWeight: 600, color: '#1e293b' }}>{opt.text}</span>
+                            <div style={{
+                                width: '40px',
+                                height: '40px',
+                                borderRadius: '50%',
+                                background: opt.color,
+                                color: 'white',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontWeight: 700,
+                                fontSize: '18px'
+                            }}>→</div>
+                        </button>
+                    ))}
 
-                {currentSubStep === 3 && (
+                    {currentSubStep === 3 && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                            <div style={{ position: 'relative' }}>
-                                <span style={{
-                                    position: 'absolute',
-                                    left: '16px',
-                                    top: '50%',
-                                    transform: 'translateY(-50%)',
-                                    fontSize: '24px'
-                                }}>📱</span>
-                                <input
-                                    type="tel"
-                                    placeholder="O seu WhatsApp"
-                                    value={data.whatsapp}
-                                    onChange={(e) => {
-                                        const whatsapp = e.target.value;
-                                        updateData({ whatsapp });
-                                        if (whatsapp && whatsapp.length < 9) {
-                                            setEmailError("Número inválido");
-                                        } else {
-                                            setEmailError(null);
-                                        }
-                                    }}
-                                    style={{
-                                        width: '100%',
-                                        height: '64px',
-                                        paddingLeft: '56px',
-                                        paddingRight: '24px',
-                                        background: 'white',
-                                        border: `2px solid ${emailError ? '#ef4444' : '#e2e8f0'}`,
-                                        borderRadius: '16px',
+                                <div style={{ position: 'relative' }}>
+                                    <div style={{
+                                        position: 'absolute',
+                                        left: '16px',
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
                                         fontSize: '18px',
-                                        fontWeight: 500,
-                                        color: '#0f172a',
-                                        outline: 'none',
-                                        transition: 'all 0.2s ease'
-                                    }}
-                                    onFocus={(e) => {
-                                        e.currentTarget.style.borderColor = emailError ? '#ef4444' : '#3b82f6';
-                                        e.currentTarget.style.boxShadow = emailError ? '0 0 0 4px rgba(239, 68, 68, 0.1)' : '0 0 0 4px rgba(59, 130, 246, 0.1)';
-                                    }}
-                                    onBlur={(e) => {
-                                        e.currentTarget.style.borderColor = emailError ? '#ef4444' : '#e2e8f0';
-                                        e.currentTarget.style.boxShadow = 'none';
-                                    }}
-                                />
+                                        fontWeight: 700,
+                                        color: '#64748b',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '4px'
+                                    }}>
+                                        <span>🇵🇹</span>
+                                        <span>+351</span>
+                                    </div>
+                                    <input
+                                        type="tel"
+                                        placeholder="9xx xxx xxx"
+                                        value={data.whatsapp}
+                                        onChange={(e) => {
+                                            // Remove non-digits
+                                            const val = e.target.value.replace(/\D/g, '').slice(0, 9);
+                                            updateData({ whatsapp: val });
+                                            
+                                            if (val.length > 0 && val[0] !== '9') {
+                                                setEmailError("Deve começar por 9");
+                                            } else if (val.length > 0 && val.length < 9) {
+                                                setEmailError("Introduza os 9 dígitos");
+                                            } else {
+                                                setEmailError(null);
+                                            }
+                                        }}
+                                        style={{
+                                            width: '100%',
+                                            height: '64px',
+                                            paddingLeft: '85px',
+                                            paddingRight: '24px',
+                                            background: 'white',
+                                            border: `2px solid ${emailError ? '#ef4444' : '#e2e8f0'}`,
+                                            borderRadius: '16px',
+                                            fontSize: '18px',
+                                            fontWeight: 500,
+                                            color: '#0f172a',
+                                            outline: 'none',
+                                            transition: 'all 0.2s ease'
+                                        }}
+                                        onFocus={(e) => {
+                                            e.currentTarget.style.borderColor = emailError ? '#ef4444' : '#3b82f6';
+                                            e.currentTarget.style.boxShadow = emailError ? '0 0 0 4px rgba(239, 68, 68, 0.1)' : '0 0 0 4px rgba(59, 130, 246, 0.1)';
+                                        }}
+                                        onBlur={(e) => {
+                                            e.currentTarget.style.borderColor = emailError ? '#ef4444' : '#e2e8f0';
+                                            e.currentTarget.style.boxShadow = 'none';
+                                        }}
+                                    />
+                                </div>
                             </div>
 
                             {emailError && (
@@ -299,8 +315,8 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                         >
                             {emailError ? 'Número Inválido' : (data.whatsapp ? '✨ Ver Meu Projeto' : 'Introduza o WhatsApp')}
                         </button>
-                    </div>
-                )}
+                    )}
+                </>
             </div>
         </div>
     );
