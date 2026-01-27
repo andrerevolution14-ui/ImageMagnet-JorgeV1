@@ -73,12 +73,28 @@ export async function POST(req: NextRequest) {
         });
 
         console.log('[API] Prediction created successfully:', prediction.id);
+        console.log('[API] Prediction status:', prediction.status);
 
         return NextResponse.json(prediction);
     } catch (error: any) {
         console.error('Final attempt error:', error);
+        console.error('Error details:', {
+            message: error.message,
+            status: error.status,
+            response: error.response
+        });
+
+        // Check for specific Replicate API errors
+        let userMessage = "Erro na IA: " + (error.message || 'Falha ao iniciar geração');
+
+        if (error.message?.includes('rate limit') || error.message?.includes('quota')) {
+            userMessage = "O serviço está temporariamente ocupado. Por favor, aguarde alguns segundos e tente novamente.";
+        } else if (error.message?.includes('timeout')) {
+            userMessage = "O servidor demorou muito a responder. Por favor, tente novamente.";
+        }
+
         return NextResponse.json({
-            error: "Erro na IA: " + (error.message || 'Falha ao iniciar geração'),
+            error: userMessage,
             details: error.toString()
         }, { status: 500 });
     }

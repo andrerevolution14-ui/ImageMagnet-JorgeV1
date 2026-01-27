@@ -132,6 +132,13 @@ export default function Funnel() {
                         const currentStatus = await statusRes.json();
                         console.log("Current status from API:", currentStatus.status);
 
+                        // Log if the prediction is queued or starting
+                        if (currentStatus.status === "starting") {
+                            console.log("⏳ Model is starting (cold start)...");
+                        } else if (currentStatus.status === "processing") {
+                            console.log("🔄 Model is processing...");
+                        }
+
                         if (currentStatus.status === "succeeded") {
                             const outputUrl = Array.isArray(currentStatus.output)
                                 ? currentStatus.output[currentStatus.output.length - 1] // Get the last one, sometimes there's a progression
