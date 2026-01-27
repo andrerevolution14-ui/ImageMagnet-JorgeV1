@@ -41,19 +41,19 @@ export async function POST(req: NextRequest) {
         const descriptiveStyle = styleMap[style] || style;
         const descriptiveZone = zoneMap[zone] || zone;
 
-        // Helper to resize a base64 image to max 1024px width (preserving aspect ratio)
+        // Helper to resize a base64 image to max 768px width (preserving aspect ratio)
         const resizeBase64Image = async (base64: string): Promise<string> => {
             const matches = base64.match(/^data:(image\/\w+);base64,(.*)$/);
             const data = matches ? matches[2] : base64;
             const buffer = Buffer.from(data, 'base64');
             const resized = await sharp(buffer)
-                .resize({ width: 1024, withoutEnlargement: true })
-                .toFormat('jpeg', { quality: 85 })
+                .resize({ width: 768, withoutEnlargement: true })
+                .toFormat('jpeg', { quality: 80 })
                 .toBuffer();
             return `data:image/jpeg;base64,${resized.toString('base64')}`;
         };
 
-        // --- Preprocess input image (resize to 1024px max for faster upload and processing) ---
+        // --- Preprocess input image (resize to 768px max for faster upload and processing) ---
         console.log("[API] Resizing image...");
         const resizedImage = await resizeBase64Image(image);
         console.log("[API] Image resized. Length:", resizedImage.length);
@@ -65,8 +65,8 @@ export async function POST(req: NextRequest) {
             input: {
                 control_image: resizedImage,
                 prompt: `A stunning professional ${descriptiveStyle} interior design renovation of this ${descriptiveZone}. Clean lines, premium materials, sophisticated lighting, architectural photography, 8k resolution, highly detailed, realistic.`,
-                steps: 30, // Reduced from 40 for faster generation
-                guidance: 3.5, // Increased for better prompt adherence
+                steps: 20, // Optimized for speed while maintaining quality
+                guidance: 3.0, // Balanced for good results and faster generation
                 output_format: "jpg",
                 safety_tolerance: 2
             },
