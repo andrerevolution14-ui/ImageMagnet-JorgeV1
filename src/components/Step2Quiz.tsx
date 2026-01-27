@@ -3,6 +3,7 @@
 import { Shield } from 'lucide-react';
 import { FunnelData } from './Funnel';
 import { useState } from 'react';
+import { event } from './FacebookPixel';
 
 interface Step2Props {
     data: FunnelData;
@@ -47,6 +48,11 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
         if (currentSubStep < 3) {
             setCurrentSubStep(currentSubStep + 1);
         } else {
+            // Track completion of the form
+            event('Lead', {
+                content_name: 'Formulário Completo',
+                content_category: 'Conversion'
+            });
             onNext();
         }
     };

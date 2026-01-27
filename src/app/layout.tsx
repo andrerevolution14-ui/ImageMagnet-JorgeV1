@@ -7,6 +7,8 @@ export const metadata: Metadata = {
 };
 
 import { Analytics } from "@vercel/analytics/next"
+import FacebookPixel from "@/components/FacebookPixel";
+import { Suspense } from "react";
 
 export default function RootLayout({
     children,
@@ -16,6 +18,9 @@ export default function RootLayout({
     return (
         <html lang="pt">
             <body>
+                <Suspense fallback={null}>
+                    <FacebookPixel />
+                </Suspense>
                 {children}
                 <Analytics />
             </body>

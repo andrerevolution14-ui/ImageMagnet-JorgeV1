@@ -10,9 +10,18 @@ interface Step3Props {
     updateData: (data: Partial<FunnelData>) => void;
 }
 
+import { event } from './FacebookPixel';
+
 export default function Step3Result({ data }: Step3Props) {
     const whatsappUrl = "https://wa.link/yn4hvp";
     const [seconds, setSeconds] = useState(0);
+
+    const handleWhatsAppClick = () => {
+        event('Lead', {
+            content_name: 'Mensagem ao Jorge',
+            content_category: 'Conversion'
+        });
+    };
 
     // Track time to show helpful messages if it takes too long
     useEffect(() => {
@@ -247,6 +256,7 @@ export default function Step3Result({ data }: Step3Props) {
                     href={whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={handleWhatsAppClick}
                     style={{
                         display: 'flex',
                         width: '100%',
