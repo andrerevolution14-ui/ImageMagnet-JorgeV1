@@ -65,15 +65,15 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
     };
 
     const options1 = [
-        { id: 'a', text: 'Vivo na casa e quero renovar', emoji: '🏡', color: '#3b82f6' },
+        { id: 'a', text: 'Vivo aqui e quero renovar', emoji: '🏡', color: '#3b82f6' },
         { id: 'b', text: 'Quero valorizar para vender/arrendar', emoji: '📈', color: '#10b981' },
-        { id: 'c', text: 'Estou a comprar e quero ver potencial', emoji: '🔑', color: '#a855f7' }
+        { id: 'c', text: 'Estou a ver casas e quero ideias', emoji: '🔑', color: '#a855f7' }
     ];
 
     const options2 = [
-        { id: 'a', text: 'O mais breve possível', emoji: '⚡', color: '#f97316' },
-        { id: 'b', text: 'Nos próximos 3-6 meses', emoji: '📅', color: '#3b82f6' },
-        { id: 'c', text: 'Apenas a planear para o futuro', emoji: '💭', color: '#8b5cf6' }
+        { id: 'a', text: 'Brevemente', emoji: '⚡', color: '#f97316' },
+        { id: 'b', text: 'Nos próximos meses', emoji: '📅', color: '#3b82f6' },
+        { id: 'c', text: 'Só estou a explorar ideias', emoji: '💭', color: '#8b5cf6' }
     ];
 
     return (
@@ -102,9 +102,9 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                     lineHeight: 1.2,
                     padding: '0 16px'
                 }}>
-                    {currentSubStep === 1 && "Qual o seu perfil de proprietário?"}
-                    {currentSubStep === 2 && "Para quando planeia a intervenção?"}
-                    {currentSubStep === 3 && "Onde podemos enviar o projeto completo?"}
+                    {currentSubStep === 1 && "Qual é a sua situação?"}
+                    {currentSubStep === 2 && "Pensa remodelar em breve?"}
+                    {currentSubStep === 3 && "Onde enviamos o resultado?"}
                 </h2>
             </div>
 
@@ -288,8 +288,8 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                             }}>
                                 <Shield style={{ color: '#2563eb', flexShrink: 0, marginTop: '2px' }} size={20} />
                                 <div style={{ fontSize: '14px', color: '#475569', lineHeight: 1.5 }}>
-                                    <span style={{ fontWeight: 600, color: '#0f172a' }}>O seu WhatsApp será usado apenas para enviar o projeto</span> e garantir que não existem gerações duplicadas pelo mesmo utilizador.
-                                    <span style={{ display: 'block', marginTop: '4px', fontSize: '12px', color: '#64748b' }}>🔒 Os seus dados estão seguros. Não fazemos chamadas indesejadas nem spam.</span>
+                                    <span style={{ fontWeight: 600, color: '#0f172a' }}>Usamos o WhatsApp para enviar o seu projeto</span> e garantir que cada pessoa recebe apenas uma visualização gratuita.
+                                    <span style={{ display: 'block', marginTop: '4px', fontSize: '12px', color: '#64748b' }}>🔒 Não fazemos chamadas nem enviamos mensagens indesejadas.</span>
                                 </div>
                             </div>
 
@@ -312,7 +312,7 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                                     transition: 'all 0.3s ease'
                                 }}
                             >
-                                {emailError ? 'Número Inválido' : (data.whatsapp ? '✨ Ver Meu Projeto' : 'Introduza o WhatsApp')}
+                                {emailError ? 'Número Inválido' : (data.whatsapp ? '✨ Ver o Resultado' : 'Introduza o WhatsApp')}
                             </button>
                         </div>
                     )}

@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Upload, ChevronRight, Sparkles } from 'lucide-react';
+import { Upload, ChevronRight, Sparkles, Shield } from 'lucide-react';
 import { FunnelData } from './Funnel';
 import { useState } from 'react';
 import imageCompression from 'browser-image-compression';
@@ -85,8 +85,26 @@ export default function Step1Hook({ data, updateData, onNext }: Step1Props) {
                     A sua casa em Aveiro tem mais potencial do que imagina
                 </motion.h1>
                 <p className="text-base text-secondary px-4" style={{ maxWidth: '600px', margin: '0 auto' }}>
-                    Antes de mexer numa parede, veja como a sua casa pode ficar. <span style={{ fontWeight: 600, color: '#1e293b' }}>100% gratuito</span>, sem compromisso.
+                    Veja como a sua casa pode ficar antes de começar qualquer obra. <span style={{ fontWeight: 600, color: '#1e293b' }}>100% gratuito</span>, sem compromisso.
                 </p>
+
+                {/* Privacy Reassurance */}
+                <div style={{
+                    maxWidth: '600px',
+                    margin: '24px auto 0',
+                    padding: '16px 20px',
+                    background: 'linear-gradient(135deg, #f0f9ff, #f8fafc)',
+                    border: '1px solid #bfdbfe',
+                    borderRadius: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px'
+                }}>
+                    <Shield style={{ color: '#2563eb', flexShrink: 0 }} size={24} />
+                    <div style={{ fontSize: '14px', color: '#475569', lineHeight: 1.5, textAlign: 'left' }}>
+                        <span style={{ fontWeight: 600, color: '#0f172a' }}>A sua privacidade é importante.</span> As suas fotos são processadas de forma segura e nunca serão partilhadas ou usadas para outros fins.
+                    </div>
+                </div>
             </div>
 
             <div className="space-y-6">
@@ -148,8 +166,8 @@ export default function Step1Hook({ data, updateData, onNext }: Step1Props) {
                             }}>
                                 <Upload size={36} />
                             </div>
-                            <h3 className="text-xl font-bold mb-2">Carregue a foto do seu espaço</h3>
-                            <p className="text-secondary text-sm">Mostre ao Jorge o que quer transformar</p>
+                            <h3 className="text-xl font-bold mb-2">Carregue uma foto do seu espaço</h3>
+                            <p className="text-secondary text-sm">Qualquer foto serve - pode ser do telemóvel</p>
                         </>
                     )}
                 </div>
