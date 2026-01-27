@@ -54,10 +54,13 @@ export async function POST(req: NextRequest) {
         };
 
         // --- Preprocess input image (resize to 1024px max for faster upload and processing) ---
+        const startResize = Date.now();
         console.log("[API] Resizing image...");
         const resizedImage = await resizeBase64Image(image);
-        console.log("[API] Image resized. Length:", resizedImage.length);
+        const resizeTime = Date.now() - startResize;
+        console.log(`[API] Image resized in ${resizeTime}ms. Length:`, resizedImage.length);
 
+        const startPrediction = Date.now();
         console.log(`[API] Starting prediction for style: ${style}, zone: ${descriptiveZone}...`);
 
         const prediction = await replicate.predictions.create({
@@ -72,8 +75,10 @@ export async function POST(req: NextRequest) {
             },
         });
 
-        console.log('[API] Prediction created successfully:', prediction.id);
+        const predictionTime = Date.now() - startPrediction;
+        console.log(`[API] Prediction created in ${predictionTime}ms:`, prediction.id);
         console.log('[API] Prediction status:', prediction.status);
+        console.log(`[API] Total API route time: ${Date.now() - startResize}ms`);
 
         return NextResponse.json(prediction);
     } catch (error: any) {

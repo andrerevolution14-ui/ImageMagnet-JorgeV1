@@ -76,11 +76,15 @@ export default function Funnel() {
     const startGeneration = async () => {
         if (!data.image) return;
 
-        console.log("Starting generation process...");
+        const generationStartTime = Date.now();
+        console.log("🚀 [FRONTEND] Starting generation process...");
         updateData({ status: 'generating', errorMessage: undefined });
 
         try {
             // Step 1: Start the prediction
+            const apiCallStart = Date.now();
+            console.log("📤 [FRONTEND] Calling /api/generate...");
+
             const response = await fetch('/api/generate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -90,6 +94,9 @@ export default function Funnel() {
                     zone: data.zone,
                 }),
             });
+
+            const apiCallTime = Date.now() - apiCallStart;
+            console.log(`✅ [FRONTEND] API call completed in ${apiCallTime}ms`);
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
@@ -103,7 +110,9 @@ export default function Funnel() {
                 throw new Error(prediction.error);
             }
 
-            console.log("Prediction started:", prediction.id);
+            console.log("🎯 [FRONTEND] Prediction started:", prediction.id);
+            console.log(`⏱️ [FRONTEND] Time to start prediction: ${Date.now() - generationStartTime}ms`);
+
 
             // Step 2: Poll for results using adaptive polling (fast at first, then slower)
             let pollCount = 0;
