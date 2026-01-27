@@ -203,8 +203,8 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                     ))}
 
                     {currentSubStep === 3 && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                                 <div style={{ position: 'relative' }}>
                                     <div style={{
                                         position: 'absolute',
@@ -229,7 +229,7 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                                             // Remove non-digits
                                             const val = e.target.value.replace(/\D/g, '').slice(0, 9);
                                             updateData({ whatsapp: val });
-                                            
+
                                             if (val.length > 0 && val[0] !== '9') {
                                                 setEmailError("Deve começar por 9");
                                             } else if (val.length > 0 && val.length < 9) {
@@ -292,29 +292,29 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                                     <span style={{ display: 'block', marginTop: '4px', fontSize: '12px', color: '#64748b' }}>🔒 Os seus dados estão seguros. Não fazemos chamadas indesejadas nem spam.</span>
                                 </div>
                             </div>
-                        </div>
 
-                        <button
-                            type="button"
-                            disabled={!!emailError || !data.whatsapp}
-                            onClick={handleNextSubStep}
-                            style={{
-                                width: '100%',
-                                height: '64px',
-                                borderRadius: '16px',
-                                border: 'none',
-                                fontWeight: 700,
-                                fontSize: '20px',
-                                color: 'white',
-                                background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #db2777 100%)',
-                                boxShadow: (emailError || !data.whatsapp) ? 'none' : '0 10px 30px rgba(37, 99, 235, 0.4)',
-                                cursor: (emailError || !data.whatsapp) ? 'not-allowed' : 'pointer',
-                                opacity: (emailError || !data.whatsapp) ? 0.5 : 1,
-                                transition: 'all 0.3s ease'
-                            }}
-                        >
-                            {emailError ? 'Número Inválido' : (data.whatsapp ? '✨ Ver Meu Projeto' : 'Introduza o WhatsApp')}
-                        </button>
+                            <button
+                                type="button"
+                                disabled={!!emailError || !data.whatsapp}
+                                onClick={handleNextSubStep}
+                                style={{
+                                    width: '100%',
+                                    height: '64px',
+                                    borderRadius: '16px',
+                                    border: 'none',
+                                    fontWeight: 700,
+                                    fontSize: '20px',
+                                    color: 'white',
+                                    background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #db2777 100%)',
+                                    boxShadow: (emailError || !data.whatsapp) ? 'none' : '0 10px 30px rgba(37, 99, 235, 0.4)',
+                                    cursor: (emailError || !data.whatsapp) ? 'not-allowed' : 'pointer',
+                                    opacity: (emailError || !data.whatsapp) ? 0.5 : 1,
+                                    transition: 'all 0.3s ease'
+                                }}
+                            >
+                                {emailError ? 'Número Inválido' : (data.whatsapp ? '✨ Ver Meu Projeto' : 'Introduza o WhatsApp')}
+                            </button>
+                        </div>
                     )}
                 </>
             </div>

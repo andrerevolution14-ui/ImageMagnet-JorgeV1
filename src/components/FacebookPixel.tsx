@@ -13,12 +13,16 @@ declare global {
 export const FB_PIXEL_ID = '920621233729145';
 
 export const pageview = () => {
-    window.fbq('track', 'PageView');
+    if (typeof window !== 'undefined' && window.fbq) {
+        window.fbq('track', 'PageView');
+    }
 };
 
 // https://developers.facebook.com/docs/facebook-pixel/advanced/
 export const event = (name: string, options = {}) => {
-    window.fbq('track', name, options);
+    if (typeof window !== 'undefined' && window.fbq) {
+        window.fbq('track', name, options);
+    }
 };
 
 export default function FacebookPixel() {
