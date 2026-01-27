@@ -23,11 +23,11 @@ export async function POST(req: NextRequest) {
 
         console.log(`Generating for ${zone} in ${style}...`);
 
-        // Map styles to more descriptive English terms
-        const styleMap: Record<string, string> = {
-            'Moderno': 'modern luxury',
-            'Minimalista': 'minimalist and clean',
-            'Rústico': 'rustic and warm'
+        // Enhanced style descriptions for more intelligent AI transformations
+        const stylePrompts: Record<string, string> = {
+            'Moderno': 'ultra-modern luxury design with sleek contemporary finishes, designer furniture, statement lighting fixtures, premium natural materials like marble and wood, floor-to-ceiling windows, neutral color palette with bold accents, high-end appliances, minimalist elegance',
+            'Minimalista': 'sophisticated minimalist design with clean geometric lines, monochromatic color scheme, hidden storage solutions, premium quality materials, abundant natural light, carefully curated furniture pieces, uncluttered spaces, zen-like atmosphere, subtle textures',
+            'Rústico': 'warm rustic charm with exposed wooden beams, natural stone features, vintage-inspired fixtures, earthy color palette, handcrafted furniture, cozy textiles, ambient lighting, authentic materials, lived-in elegance, artisanal details'
         };
 
         // Map zones to English for the AI
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
             'Casa de Banho': 'bathroom'
         };
 
-        const descriptiveStyle = styleMap[style] || style;
+        const styleDescription = stylePrompts[style] || 'professional interior design with premium materials and sophisticated lighting';
         const descriptiveZone = zoneMap[zone] || zone;
 
         // Helper to resize a base64 image to max 1024px width (preserving aspect ratio)
@@ -58,15 +58,15 @@ export async function POST(req: NextRequest) {
         const resizedImage = await resizeBase64Image(image);
         console.log("[API] Image resized. Length:", resizedImage.length);
 
-        console.log(`[API] Starting prediction for style: ${descriptiveStyle}, zone: ${descriptiveZone}...`);
+        console.log(`[API] Starting prediction for style: ${style}, zone: ${descriptiveZone}...`);
 
         const prediction = await replicate.predictions.create({
             model: "black-forest-labs/flux-depth-pro",
             input: {
                 control_image: resizedImage,
-                prompt: `A stunning professional ${descriptiveStyle} interior design renovation of this ${descriptiveZone}. Clean lines, premium materials, sophisticated lighting, architectural photography, 8k resolution, highly detailed, realistic.`,
+                prompt: `Professional architectural photography of a completely renovated ${descriptiveZone} featuring ${styleDescription}. Transform this space with dramatic improvements: new flooring, updated walls, modern ceiling design, professional interior styling. Magazine-quality result, 8k resolution, photorealistic, expertly lit, award-winning interior design.`,
                 steps: 30, // Higher steps for better quality and more intelligent improvements
-                guidance: 3.5, // Higher guidance for better prompt adherence and detail
+                guidance: 4.0, // Increased guidance for stronger, more dramatic transformations
                 output_format: "jpg",
                 safety_tolerance: 2
             },
