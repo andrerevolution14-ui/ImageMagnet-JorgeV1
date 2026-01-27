@@ -4,11 +4,11 @@ export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
         console.log("Saving lead to ImageMagnet_JorgeV1. Received Body:", JSON.stringify(body));
-        const { whatsapp, question_1, question_2 } = body;
+        const { email, question_1, question_2 } = body;
 
-        if (!whatsapp) {
-            console.error("Error: Received empty whatsapp from frontend");
-            return NextResponse.json({ error: "Whatsapp is required" }, { status: 400 });
+        if (!email) {
+            console.error("Error: Received empty email from frontend");
+            return NextResponse.json({ error: "Email is required" }, { status: 400 });
         }
 
         const controller = new AbortController();
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    Whatsapp: whatsapp,
+                    Email: email,
                     Question_1: question_1.toUpperCase(),
                     Question_2: question_2.toUpperCase()
                 }),

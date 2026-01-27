@@ -15,7 +15,7 @@ export type FunnelData = {
     question_1: string;
     question_2: string;
     name: string;
-    whatsapp: string;
+    email: string;
     outputImage: string | null;
     status: 'idle' | 'generating' | 'success' | 'error';
     errorMessage?: string;
@@ -32,7 +32,7 @@ export default function Funnel() {
         question_1: '',
         question_2: '',
         name: '',
-        whatsapp: '',
+        email: '',
         outputImage: null,
         status: 'idle'
     });
@@ -42,7 +42,7 @@ export default function Funnel() {
     const sendLeadToPocketBase = async (finalData: FunnelData) => {
         try {
             console.log("Sending lead to backend API with data:", {
-                whatsapp: finalData.whatsapp,
+                email: finalData.email,
                 q1: finalData.question_1,
                 q2: finalData.question_2
             });
@@ -50,7 +50,7 @@ export default function Funnel() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    whatsapp: finalData.whatsapp,
+                    email: finalData.email,
                     question_1: finalData.question_1,
                     question_2: finalData.question_2
                 }),

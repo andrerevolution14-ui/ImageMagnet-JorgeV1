@@ -1,6 +1,6 @@
 'use client';
 
-import { Shield } from 'lucide-react';
+import { Shield, Lock, Mail, CheckCircle2 } from 'lucide-react';
 import { FunnelData } from './Funnel';
 import { useState } from 'react';
 import { event } from './FacebookPixel';
@@ -204,49 +204,39 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
 
                     {currentSubStep === 3 && (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                            {/* Email Input with Icon */}
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                 <div style={{ position: 'relative' }}>
                                     <div style={{
                                         position: 'absolute',
-                                        left: '16px',
+                                        left: '20px',
                                         top: '50%',
                                         transform: 'translateY(-50%)',
-                                        fontSize: '18px',
-                                        fontWeight: 700,
                                         color: '#64748b',
                                         display: 'flex',
                                         alignItems: 'center',
-                                        gap: '4px'
+                                        zIndex: 1
                                     }}>
-                                        <span>🇵🇹</span>
-                                        <span>+351</span>
+                                        <Mail size={22} strokeWidth={2.5} />
                                     </div>
                                     <input
-                                        type="tel"
-                                        placeholder="9xx xxx xxx"
-                                        value={data.whatsapp}
+                                        type="email"
+                                        placeholder="o-seu-email@exemplo.com"
+                                        value={data.email}
                                         onChange={(e) => {
-                                            // Remove non-digits
-                                            const val = e.target.value.replace(/\D/g, '').slice(0, 9);
-                                            updateData({ whatsapp: val });
-
-                                            if (val.length > 0 && val[0] !== '9') {
-                                                setEmailError("Deve começar por 9");
-                                            } else if (val.length > 0 && val.length < 9) {
-                                                setEmailError("Introduza os 9 dígitos");
-                                            } else {
-                                                setEmailError(null);
-                                            }
+                                            const val = e.target.value.trim();
+                                            updateData({ email: val });
+                                            validateEmail(val);
                                         }}
                                         style={{
                                             width: '100%',
-                                            height: '64px',
-                                            paddingLeft: '85px',
+                                            height: '68px',
+                                            paddingLeft: '56px',
                                             paddingRight: '24px',
                                             background: 'white',
                                             border: `2px solid ${emailError ? '#ef4444' : '#e2e8f0'}`,
                                             borderRadius: '16px',
-                                            fontSize: '18px',
+                                            fontSize: '17px',
                                             fontWeight: 500,
                                             color: '#0f172a',
                                             outline: 'none',
@@ -270,49 +260,125 @@ export default function Step2Quiz({ data, updateData, onNext }: Step2Props) {
                                     fontSize: '14px',
                                     fontWeight: 600,
                                     paddingLeft: '4px',
-                                    marginTop: '-8px'
+                                    marginTop: '-12px'
                                 }}>
                                     ⚠️ {emailError}
                                 </div>
                             )}
 
-                            {/* Privacy explanation - THE EXCUSE */}
+                            {/* Trust Signals - Multiple badges for maximum confidence */}
                             <div style={{
                                 display: 'flex',
-                                alignItems: 'flex-start',
-                                gap: '12px',
-                                padding: '16px',
-                                background: '#f8fafc',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '12px'
+                                flexDirection: 'column',
+                                gap: '12px'
                             }}>
-                                <Shield style={{ color: '#2563eb', flexShrink: 0, marginTop: '2px' }} size={20} />
-                                <div style={{ fontSize: '14px', color: '#475569', lineHeight: 1.5 }}>
-                                    <span style={{ fontWeight: 600, color: '#0f172a' }}>Usamos o WhatsApp para enviar o seu projeto</span> e garantir que cada pessoa recebe apenas uma visualização gratuita.
-                                    <span style={{ display: 'block', marginTop: '4px', fontSize: '12px', color: '#64748b' }}>🔒 Não fazemos chamadas nem enviamos mensagens indesejadas.</span>
+                                {/* Primary Trust Message */}
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'flex-start',
+                                    gap: '12px',
+                                    padding: '18px',
+                                    background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
+                                    border: '2px solid #bae6fd',
+                                    borderRadius: '14px'
+                                }}>
+                                    <Shield style={{ color: '#0284c7', flexShrink: 0, marginTop: '2px' }} size={24} strokeWidth={2.5} />
+                                    <div style={{ fontSize: '14px', color: '#0c4a6e', lineHeight: 1.6 }}>
+                                        <span style={{ fontWeight: 700, color: '#0c4a6e', display: 'block', marginBottom: '4px' }}>
+                                            100% Privado e Seguro
+                                        </span>
+                                        O seu email é usado apenas para enviar o resultado. Nunca partilhamos os seus dados com terceiros.
+                                    </div>
+                                </div>
+
+                                {/* Security Badges Row */}
+                                <div style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: '1fr 1fr',
+                                    gap: '10px'
+                                }}>
+                                    {/* SSL Encrypted Badge */}
+                                    <div style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                        padding: '12px 14px',
+                                        background: '#f8fafc',
+                                        border: '1px solid #e2e8f0',
+                                        borderRadius: '10px'
+                                    }}>
+                                        <Lock style={{ color: '#10b981', flexShrink: 0 }} size={18} strokeWidth={2.5} />
+                                        <div style={{ fontSize: '12px', fontWeight: 600, color: '#475569' }}>
+                                            SSL Encriptado
+                                        </div>
+                                    </div>
+
+                                    {/* GDPR Compliant Badge */}
+                                    <div style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                        padding: '12px 14px',
+                                        background: '#f8fafc',
+                                        border: '1px solid #e2e8f0',
+                                        borderRadius: '10px'
+                                    }}>
+                                        <CheckCircle2 style={{ color: '#10b981', flexShrink: 0 }} size={18} strokeWidth={2.5} />
+                                        <div style={{ fontSize: '12px', fontWeight: 600, color: '#475569' }}>
+                                            RGPD Conforme
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Additional Reassurance */}
+                                <div style={{
+                                    padding: '12px',
+                                    background: '#fefce8',
+                                    border: '1px solid #fde047',
+                                    borderRadius: '10px',
+                                    textAlign: 'center'
+                                }}>
+                                    <div style={{ fontSize: '13px', color: '#713f12', lineHeight: 1.5 }}>
+                                        <span style={{ fontWeight: 700 }}>✨ Sem spam, garantido.</span>
+                                        <span style={{ display: 'block', fontSize: '12px', marginTop: '2px', color: '#854d0e' }}>
+                                            Pode cancelar a subscrição a qualquer momento.
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
 
                             <button
                                 type="button"
-                                disabled={!!emailError || !data.whatsapp}
+                                disabled={!!emailError || !data.email}
                                 onClick={handleNextSubStep}
                                 style={{
                                     width: '100%',
-                                    height: '64px',
+                                    height: '68px',
                                     borderRadius: '16px',
                                     border: 'none',
                                     fontWeight: 700,
-                                    fontSize: '20px',
+                                    fontSize: '19px',
                                     color: 'white',
-                                    background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #db2777 100%)',
-                                    boxShadow: (emailError || !data.whatsapp) ? 'none' : '0 10px 30px rgba(37, 99, 235, 0.4)',
-                                    cursor: (emailError || !data.whatsapp) ? 'not-allowed' : 'pointer',
-                                    opacity: (emailError || !data.whatsapp) ? 0.5 : 1,
+                                    background: (emailError || !data.email)
+                                        ? '#cbd5e1'
+                                        : 'linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #db2777 100%)',
+                                    boxShadow: (emailError || !data.email) ? 'none' : '0 10px 30px rgba(37, 99, 235, 0.4)',
+                                    cursor: (emailError || !data.email) ? 'not-allowed' : 'pointer',
+                                    opacity: (emailError || !data.email) ? 0.6 : 1,
                                     transition: 'all 0.3s ease'
                                 }}
+                                onMouseEnter={(e) => {
+                                    if (!emailError && data.email) {
+                                        e.currentTarget.style.transform = 'translateY(-2px)';
+                                        e.currentTarget.style.boxShadow = '0 15px 40px rgba(37, 99, 235, 0.5)';
+                                    }
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.transform = 'translateY(0)';
+                                    e.currentTarget.style.boxShadow = (emailError || !data.email) ? 'none' : '0 10px 30px rgba(37, 99, 235, 0.4)';
+                                }}
                             >
-                                {emailError ? 'Número Inválido' : (data.whatsapp ? '✨ Ver o Resultado' : 'Introduza o WhatsApp')}
+                                {emailError ? '⚠️ Email Inválido' : (data.email ? '✨ Ver o Meu Resultado' : '📧 Introduza o Email')}
                             </button>
                         </div>
                     )}
