@@ -107,7 +107,7 @@ export default function Funnel() {
 
             // Step 2: Poll for results using a robust recursive timeout
             let pollCount = 0;
-            const maxPolls = 150; // ~5 minutes at 2s interval
+            const maxPolls = 250; // Increased to allow more time for slow model starts
 
             const poll = async () => {
                 if (!prediction.id || pollCount >= maxPolls) {
@@ -174,7 +174,7 @@ export default function Funnel() {
                     }
                     return prev;
                 });
-            }, 480000);
+            }, 650000);
 
         } catch (err: any) {
             console.error('Generation failed:', err);

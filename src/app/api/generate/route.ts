@@ -23,51 +23,50 @@ export async function POST(req: NextRequest) {
 
         console.log(`Generating for ${zone} in ${style}...`);
 
-        // Map styles to more descriptive English terms to avoid "futuristic" interpretations
+        // Map styles to more descriptive English terms
         const styleMap: Record<string, string> = {
-            'Moderno': 'modern and contemporary',
+            'Moderno': 'modern luxury',
             'Minimalista': 'minimalist and clean',
             'Rústico': 'rustic and warm'
         };
 
+        // Map zones to English for the AI
+        const zoneMap: Record<string, string> = {
+            'Cozinha': 'kitchen',
+            'Sala': 'living room',
+            'Quarto': 'bedroom',
+            'Casa de Banho': 'bathroom'
+        };
+
         const descriptiveStyle = styleMap[style] || style;
-
-        // Prompt will be built later with ControlNet integration
-
-
+        const descriptiveZone = zoneMap[zone] || zone;
 
         // Helper to resize a base64 image to max 1024px width (preserving aspect ratio)
         const resizeBase64Image = async (base64: string): Promise<string> => {
-            // Remove possible data URI prefix
             const matches = base64.match(/^data:(image\/\w+);base64,(.*)$/);
-            const mime = matches ? matches[1] : 'image/jpeg';
             const data = matches ? matches[2] : base64;
             const buffer = Buffer.from(data, 'base64');
             const resized = await sharp(buffer)
                 .resize({ width: 1024, withoutEnlargement: true })
-                .toFormat('jpeg')
+                .toFormat('jpeg', { quality: 85 })
                 .toBuffer();
-            return `data:${mime};base64,${resized.toString('base64')}`;
+            return `data:image/jpeg;base64,${resized.toString('base64')}`;
         };
 
-        // --- Preprocess input image (resize to 1024px max) ---
+        // --- Preprocess input image (resize to 1024px max for faster upload and processing) ---
         console.log("[API] Resizing image...");
         const resizedImage = await resizeBase64Image(image);
         console.log("[API] Image resized. Length:", resizedImage.length);
 
-        // ---------- DRAMATIC TRANSFORMATION MODEL ----------
-        // Model: black-forest-labs/flux-depth-pro (Allows RADICAL changes while preserving structure)
-        // Depth control = preserves room layout but allows complete material/color transformation
-        console.log(`[API] Starting prediction for style: ${style}, zone: ${zone}...`);
+        console.log(`[API] Starting prediction for style: ${descriptiveStyle}, zone: ${descriptiveZone}...`);
 
         const prediction = await replicate.predictions.create({
             model: "black-forest-labs/flux-depth-pro",
             input: {
                 control_image: resizedImage,
-                prompt: `Stunning modern ${descriptiveStyle} transformation of this ${zone}. Contemporary renovation featuring: sleek ${descriptiveStyle} furniture with clean lines, eye-catching sophisticated color scheme, premium flooring, designer lighting, pristine finishes, curated stylish decor. IMMACULATE PRESENTATION: spotlessly clean, perfectly organized, minimalist elegance, professional interior design staging. Vibrant yet refined, visually striking, modern aesthetic appeal. Ultra-sharp 8k photography, flawless composition, architectural magazine quality.`,
-                negative_prompt: "identical to original, no changes, messy, cluttered, disorganized, chaotic, dirty, dusty, old furniture, dated style, boring, dull, futuristic, neon, sci-fi, blur, noise, artifacts, low quality, grainy",
-                steps: 40,
-                guidance: 2.5,  // Optimized for clean, modern, eye-catching transformations
+                prompt: `A stunning professional ${descriptiveStyle} interior design renovation of this ${descriptiveZone}. Clean lines, premium materials, sophisticated lighting, architectural photography, 8k resolution, highly detailed, realistic.`,
+                steps: 30, // Reduced from 40 for faster generation
+                guidance: 3.5, // Increased for better prompt adherence
                 output_format: "jpg",
                 safety_tolerance: 2
             },
