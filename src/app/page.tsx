@@ -12,12 +12,15 @@ export default function Home() {
             </div>
 
             {/* Float Branding */}
-            <div className="absolute top-6 left-6 flex items-center gap-2 opacity-50 select-none">
+            <div className="fixed top-6 left-6 z-50 flex items-center gap-2 opacity-50 select-none hover:opacity-100 transition-opacity">
                 <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white font-bold text-lg">J</div>
                 <span className="font-bold text-slate-900 tracking-tighter">AVEIRO</span>
             </div>
 
-            <Funnel />
+            {/* Funnel Section */}
+            <div className="min-h-screen flex items-center justify-center py-20">
+                <Funnel />
+            </div>
         </main>
     );
 }

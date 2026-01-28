@@ -82,10 +82,10 @@ export default function Step1Hook({ data, updateData, onNext }: Step1Props) {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.2 }}
                 >
-                    A sua casa em Aveiro tem mais potencial do que imagina
+                    Carregue uma foto da sua casa
                 </motion.h1>
                 <p className="text-base text-secondary px-4" style={{ maxWidth: '600px', margin: '0 auto' }}>
-                    Veja como a sua casa pode ficar antes de começar qualquer obra. <span style={{ fontWeight: 600, color: '#1e293b' }}>100% gratuito</span>, sem compromisso.
+                    Veja como o seu espaço pode ficar transformado pela IA. <span style={{ fontWeight: 600, color: '#1e293b' }}>Grátis e em 10 segundos</span>.
                 </p>
 
                 {/* Privacy Reassurance */}
@@ -172,41 +172,6 @@ export default function Step1Hook({ data, updateData, onNext }: Step1Props) {
                     )}
                 </div>
 
-                {/* Selectors Card */}
-                <div className="glass-card p-6 space-y-6">
-                    <div>
-                        <label className="section-label">
-                            <Sparkles className="text-primary w-5 h-5" /> O que quer remodelar?
-                        </label>
-                        <div className="grid grid-cols-2 gap-3">
-                            {zones.map((z) => (
-                                <button
-                                    key={z}
-                                    onClick={() => updateData({ zone: z })}
-                                    className={`selector-button ${data.zone === z ? 'selector-button-active' : ''}`}
-                                >
-                                    {z}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div>
-                        <label className="section-label">Escolha o seu Estilo</label>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                            {styles.map((s) => (
-                                <button
-                                    key={s}
-                                    onClick={() => updateData({ style: s })}
-                                    className={`selector-button ${data.style === s ? 'selector-button-active' : ''}`}
-                                >
-                                    {s}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
                 {/* CTA Button - WITH INLINE GRADIENT */}
                 <motion.button
                     onClick={() => {
@@ -237,9 +202,87 @@ export default function Step1Hook({ data, updateData, onNext }: Step1Props) {
                         transition: 'all 0.3s ease'
                     }}
                 >
-                    ✨ Gerar Minha Nova Casa
+                    ✨ Transformar Agora
                     <ChevronRight size={24} />
                 </motion.button>
+
+                {/* Small Before/After Examples - Below Button */}
+                <div style={{ marginTop: '20px' }}>
+                    <p style={{
+                        fontSize: '12px',
+                        fontWeight: 600,
+                        color: '#64748b',
+                        marginBottom: '12px',
+                        textAlign: 'center'
+                    }}>
+                        ✨ Exemplos de transformações
+                    </p>
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(2, 1fr)',
+                        gap: '12px'
+                    }}>
+                        {[1, 2].map((i) => (
+                            <div key={i} style={{
+                                borderRadius: '12px',
+                                overflow: 'hidden',
+                                border: '1px solid #e5e7eb',
+                                background: '#fff'
+                            }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
+                                    <div style={{ position: 'relative' }}>
+                                        <img
+                                            src={`/examples/before-${i}.jpg`}
+                                            alt="Antes"
+                                            style={{
+                                                width: '100%',
+                                                height: '80px',
+                                                objectFit: 'cover'
+                                            }}
+                                        />
+                                        <div style={{
+                                            position: 'absolute',
+                                            top: '4px',
+                                            left: '4px',
+                                            padding: '2px 6px',
+                                            background: 'rgba(255, 255, 255, 0.95)',
+                                            borderRadius: '4px',
+                                            fontSize: '9px',
+                                            fontWeight: 600,
+                                            color: '#475569'
+                                        }}>
+                                            Antes
+                                        </div>
+                                    </div>
+                                    <div style={{ position: 'relative' }}>
+                                        <img
+                                            src={`/examples/after-${i}.jpg`}
+                                            alt="Depois"
+                                            style={{
+                                                width: '100%',
+                                                height: '80px',
+                                                objectFit: 'cover'
+                                            }}
+                                        />
+                                        <div style={{
+                                            position: 'absolute',
+                                            top: '4px',
+                                            right: '4px',
+                                            padding: '2px 6px',
+                                            background: '#2563eb',
+                                            borderRadius: '4px',
+                                            fontSize: '9px',
+                                            fontWeight: 600,
+                                            color: '#fff'
+                                        }}>
+                                            Depois
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
         </motion.div>
     );

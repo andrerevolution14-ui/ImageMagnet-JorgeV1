@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import Step1Hook from './Step1Hook';
 import Step2Quiz from './Step2Quiz';
@@ -213,25 +213,97 @@ export default function Funnel() {
 
     const handleStep1Submit = () => {
         startGeneration();
-        nextStep();
+        setStep(2); // Move to transition
     };
 
     const handleStep2Submit = () => {
         sendLeadToPocketBase(data);
-        nextStep();
+        setStep(4); // Move to final result
     };
 
     return (
         <div className="min-h-screen flex items-center justify-center p-4">
-            {step === 1 && (
-                <Step1Hook data={data} updateData={updateData} onNext={handleStep1Submit} />
-            )}
-            {step === 2 && (
-                <Step2Quiz data={data} updateData={updateData} onNext={handleStep2Submit} />
-            )}
-            {step === 3 && (
-                <Step3Result data={data} updateData={updateData} />
-            )}
+            <AnimatePresence mode="wait">
+                {step === 1 && (
+                    <Step1Hook key="step1" data={data} updateData={updateData} onNext={handleStep1Submit} />
+                )}
+
+                {step === 2 && (
+                    <TransitionStep key="step2" onComplete={() => setStep(3)} />
+                )}
+
+                {step === 3 && (
+                    <Step2Quiz key="step3" data={data} updateData={updateData} onNext={handleStep2Submit} />
+                )}
+
+                {step === 4 && (
+                    <Step3Result key="step4" data={data} updateData={updateData} />
+                )}
+            </AnimatePresence>
+        </div>
+    );
+}
+
+// Intermediate Loading Step
+function TransitionStep({ onComplete }: { onComplete: () => void }) {
+    const [progress, setProgress] = useState(0);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setProgress(prev => {
+                if (prev >= 100) {
+                    clearInterval(timer);
+                    setTimeout(onComplete, 500);
+                    return 100;
+                }
+                return prev + 1;
+            });
+        }, 30); // Approx 3 seconds total
+        return () => clearInterval(timer);
+    }, [onComplete]);
+
+    return (
+        <div style={{ textAlign: 'center', width: '100%', maxWidth: '400px' }}>
+            <div style={{ marginBottom: '30px' }}>
+                <div style={{
+                    width: '70px',
+                    height: '70px',
+                    borderRadius: '50%',
+                    border: '4px solid #e2e8f0',
+                    borderTopColor: '#2563eb',
+                    margin: '0 auto',
+                    animation: 'spin 1s linear infinite'
+                }} />
+                <style>{`
+                    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+                `}</style>
+            </div>
+
+            <h2 style={{ fontSize: '24px', fontWeight: 800, color: '#0f172a', marginBottom: '16px' }}>
+                A remodelar a sua casa...
+            </h2>
+            <p style={{ color: '#64748b', fontSize: '15px', marginBottom: '24px' }}>
+                A nossa IA está a analisar o seu espaço e a criar uma visualização única.
+            </p>
+
+            <div style={{
+                width: '100%',
+                height: '8px',
+                background: '#f1f5f9',
+                borderRadius: '999px',
+                overflow: 'hidden',
+                marginBottom: '10px'
+            }}>
+                <div style={{
+                    width: `${progress}%`,
+                    height: '100%',
+                    background: 'linear-gradient(90deg, #2563eb, #7c3aed)',
+                    transition: 'width 0.1s ease-out'
+                }} />
+            </div>
+            <div style={{ fontSize: '12px', fontWeight: 600, color: '#2563eb' }}>
+                {progress}%
+            </div>
         </div>
     );
 }
